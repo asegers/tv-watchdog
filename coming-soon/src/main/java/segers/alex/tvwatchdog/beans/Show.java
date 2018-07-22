@@ -1,4 +1,4 @@
-package segers.alex.comingsoon.beans;
+package segers.alex.tvwatchdog.beans;
 
 import java.time.LocalDateTime;
 

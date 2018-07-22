@@ -1,4 +1,4 @@
-package segers.alex.comingsoon.controller;
+package segers.alex.tvwatchdog.controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -20,9 +20,9 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 
-import segers.alex.comingsoon.beans.Show;
-import segers.alex.comingsoon.service.MongoService;
-import segers.alex.comingsoon.service.TraktService;
+import segers.alex.tvwatchdog.beans.Show;
+import segers.alex.tvwatchdog.service.MongoService;
+import segers.alex.tvwatchdog.service.TraktService;
 
 
 @RestController

@@ -1,4 +1,4 @@
-package segers.alex.comingsoon.util;
+package segers.alex.tvwatchdog.util;
 
 import org.bson.Document;
 import org.json.JSONException;
@@ -9,7 +9,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
-public class ComingSoonUtil {
+public class TvWatchdogUtil {
 	
 	private void generateTop200List() throws JSONException {
     	

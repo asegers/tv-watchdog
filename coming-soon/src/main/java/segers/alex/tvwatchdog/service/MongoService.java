@@ -1,4 +1,4 @@
-package segers.alex.comingsoon.service;
+package segers.alex.tvwatchdog.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,7 +15,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 
-import segers.alex.comingsoon.beans.Show;
+import segers.alex.tvwatchdog.beans.Show;
 
 public class MongoService {
 

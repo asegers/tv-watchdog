@@ -1,4 +1,4 @@
-package segers.alex.comingsoon.service;
+package segers.alex.tvwatchdog.service;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -12,7 +12,7 @@ import org.json.JSONObject;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import segers.alex.comingsoon.beans.Show;
+import segers.alex.tvwatchdog.beans.Show;
 
 public class TraktService {
 	
