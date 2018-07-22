@@ -1,0 +1,1 @@
+TV Watchdog is a web application built with Java (also JS, HTML/CSS, MongoDB, Springboot, Gradle) that tracks television series, via leveraging Trakt's API, and notifies users of updates regarding their chosen series ("Premiere airs today!"; "Entire season now available to binge!"). Eventual plans to add e-mail notifications, making the web page a "set and forget" type of deal.
