@@ -2,6 +2,8 @@ package segers.alex.tvwatchdog.beans;
 
 import java.time.LocalDateTime;
 
+import org.json.JSONObject;
+
 public class Show {
 // from trakt via REST API
 	private String title;
@@ -40,6 +42,61 @@ public class Show {
 		"Current Season:\t " + getCurrentSeason() + "\n" +
 		"Last Episode:\t season #" + getLatestEpsSeasonNumber() + ", on " + getLatestEpDate() + "\n" +
 		"Next Episode:\t #" + getNextEpNumber() + " on " + getNextEpDate();
+	}
+	
+	public JSONObject toJson() {
+    	JSONObject showJson = null;
+
+		showJson = new JSONObject()
+                .put("title", this.getTitle())
+                .put("slug", this.getIdSlug())
+                .put("status", this.getStatus())
+                .put("yearBegin", this.getYearBegin())
+                .put("yearLatest", this.getYearLatest())
+                .put("currentSeason", this.getCurrentSeason());
+		if (null != this.getNextEpDate()) {
+			showJson.put("nextEpisodeDate", this.getNextEpDate().toString())	
+			.put("nextEpisodeNum", this.getNextEpNumber());
+    	}
+		else {
+			showJson.put("nextEpisodeDate", "")	
+			.put("nextEpisodeNum", "");
+    	}
+		
+		if (null != this.getLatestEpDate()) {
+			showJson.put("latestEpisodeDate", this.getLatestEpDate().toString())	
+			.put("latestEpisodeSeasonNum", this.getLatestEpsSeasonNumber());
+    	}
+    	else {
+    		showJson.put("latestEpisodeDate", "")	
+			.put("latestEpisodeSeasonNum", "");
+    	}
+		
+		showJson
+                .put("idTrakt", this.getIdTrakt())
+                .put("statusTrakt", this.getStatusTrakt());
+		
+        if (null != this.getUpdatedAtTrakt()) {
+			showJson.put("traktUpdatedOn", this.getUpdatedAtTrakt().toString());
+    	}
+    	else {
+    		showJson.put("traktUpdatedOn", "");
+    	}
+        
+        if (null != this.getDetail()) {
+			showJson.put("detail", this.getDetail().toString());
+    	}
+    	else {
+    		showJson.put("detail", "");
+    	}
+        
+        if (null != this.getHoverDetail()) {
+			showJson.put("hoverDate", this.getHoverDetail().toString());
+    	}
+    	else {
+    		showJson.put("hoverDate", "");
+    	}
+		return showJson;
 	}
 
 	public String determineAndSetMyStatus() {

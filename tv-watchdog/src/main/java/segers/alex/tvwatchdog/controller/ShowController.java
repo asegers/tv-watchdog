@@ -3,9 +3,11 @@ package segers.alex.tvwatchdog.controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 
 import org.bson.Document;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,8 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 
 import segers.alex.tvwatchdog.beans.Show;
-import segers.alex.tvwatchdog.service.MongoService;
+import segers.alex.tvwatchdog.dao.Dao;
+import segers.alex.tvwatchdog.dao.ShowDao;
 import segers.alex.tvwatchdog.service.TraktService;
 
 
@@ -29,22 +32,119 @@ import segers.alex.tvwatchdog.service.TraktService;
 //@Component
 public class ShowController {
 
-	public MongoService mongoSvc = new MongoService();
 	public TraktService traktSvc = new TraktService();
+	public ShowDao daoShow = new ShowDao();
     
     @RequestMapping("/getShows")
     public String getShows( @RequestParam(value="sort", defaultValue="best") String sort, @RequestParam(value="shows", defaultValue="game-of-thrones,breaking-bad") ArrayList<String> slugs) throws IOException, JSONException {
 
-    	ArrayList<String> showSlugs = slugs; 
-    	
 		System.out.println(slugs.toString());
 		System.out.println(sort);
 		
-		String showsJson = mongoSvc.getShowsFromMongo(showSlugs);
-    	return showsJson;
+		ArrayList<Show> shows = daoShow.getShowsBySlugNames(slugs);
+		
+		// calculate/set show's details based on today's date
+		for (int i = 0; i < shows.size(); i++){
+			Show show2 = calculateShowDetails(shows.get(i));
+			shows.set(i, show2);
+		}
+		
+		// for each show, translate to json obj and add to JSONArray, then stringify
+		String showsJsonForUI = convertToJsonArrayString(shows);
+
+    	return showsJsonForUI;
     }
-  
-    @RequestMapping("/dailyDatabaseUpdate")
+
+    public Show calculateShowDetails(Show show) throws JSONException {
+		String detail = "";
+		String hoverDetail = "";
+		
+		// ADD SPEECH FOR IF PREMIERE, NEW EPISODE IS TODAY!!!! ALSO ADD "Newest season released recently!" for Netflix shows, etc.
+		
+		LocalDateTime nextEpDate = show.getNextEpDate();
+		int daysTill = 0; String daysOrDay = ""; String dayOfWeekUpper = ""; String dayOfWeek = ""; String releaseDate = "";
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd, yyyy");
+
+		String status = show.getStatus();
+		switch(status){
+			
+			case "newSeasonHasPremiereDate":
+				int season = show.getCurrentSeason();
+				daysTill = 1 + (int) ChronoUnit.DAYS.between(LocalDateTime.now(), nextEpDate);
+				daysOrDay = "days";
+				if (daysTill == 1) daysOrDay = "day";
+				detail = " - " + daysTill + " " + daysOrDay + " till Season " + season + " premiere!";
+				// (Friday) June 22, 2018.. position of (Friday) depends on how if daysTill < 7
+				dayOfWeekUpper = nextEpDate.getDayOfWeek().toString();
+				dayOfWeek = dayOfWeekUpper.substring(0, 1) + dayOfWeekUpper.substring(1).toLowerCase();
+				releaseDate = nextEpDate.format(formatter);
+				if (daysTill < 7) {
+					hoverDetail = "(" + dayOfWeek + ") " + releaseDate;
+				}
+				else {
+					hoverDetail = releaseDate + " (" + dayOfWeek + ")";
+				}
+				show.setDetail(detail);
+				show.setHoverDetail(hoverDetail);
+				break;
+				
+			case "seasonCurrentlyAiring":
+				int iSeasonNum = show.getCurrentSeason();
+				String strSeasonNum = String.valueOf(iSeasonNum);
+				if (iSeasonNum < 10) strSeasonNum = "0" + strSeasonNum;
+				
+				int iEpisodeNum = show.getNextEpNumber();
+				String strEpisodeNum = String.valueOf(iEpisodeNum);
+				if (iEpisodeNum < 10) strEpisodeNum = "0" + strEpisodeNum;
+				
+				daysTill = 1 + (int) ChronoUnit.DAYS.between(LocalDateTime.now(), nextEpDate);
+				daysOrDay = "days";
+				if (daysTill == 1) daysOrDay = "day";
+				detail = " - " + daysTill + " " + daysOrDay + " till new episode. (s" + strSeasonNum + "e" + strEpisodeNum + ")";
+				dayOfWeekUpper = nextEpDate.getDayOfWeek().toString();
+				dayOfWeek = dayOfWeekUpper.substring(0, 1) + dayOfWeekUpper.substring(1).toLowerCase();
+				releaseDate = nextEpDate.format(formatter);
+				if (daysTill < 7) {
+					hoverDetail = "(" + dayOfWeek + ") " + releaseDate;
+				}
+				else {
+					hoverDetail = releaseDate + " (" + dayOfWeek + ")";
+				}
+				show.setDetail(detail);
+				show.setHoverDetail(hoverDetail);
+				break;
+				
+			case "seriesEnded":
+				int yearBegin = show.getYearBegin();
+				int yearEnded = show.getYearLatest();
+				show.setDetail(" (" + yearBegin + "-" + yearEnded + ")");
+				break;
+				
+			case "newSeasonAnnounced":
+				show.setDetail(" - Season " + (show.getLatestEpsSeasonNumber() + 1) + " announced! Premiere date TBA.");
+				break;
+				
+			case "seasonEnded":
+				show.setDetail(" - " + "awaiting news on next season.");
+				break;
+
+		}
+		return show;
+	}
+    
+    private String convertToJsonArrayString(ArrayList<Show> shows) {
+    	JSONArray arrayJsonShows = new JSONArray();
+    	for (Show show : shows) {
+			arrayJsonShows.put(show.toJson());
+		}
+		
+    	String jsonString = new JSONObject()
+    			.put("shows", arrayJsonShows).toString();
+    	
+    	return jsonString;
+	}
+
+	@RequestMapping("/dailyDatabaseUpdate")
     public void updateDatabaseViaTrakt()  {
     	// To run daily, need to schedule somehow... via Jenkins?
     	dailyDatabaseUpdates();
@@ -176,6 +276,7 @@ public class ShowController {
 			// case traktStatus = returning, else
 				// check matches, if not then update
     	for (Show show : getShowApiCallShows) {
+    		if(!show.getTitle().equals("12 Monkeys")){
     		Show showUpdate = traktSvc.getSingleShow(show.getIdSlug());
     		
     		String currentTraktStatus = showUpdate.getStatusTrakt();
@@ -197,6 +298,7 @@ public class ShowController {
     		if (updatedFlag) {
 				mongoUpdateShows.add(show);
     		}
+    	}
     	}
     	// ADD "LOGGING"
     	// update MongoDB with shows...
@@ -249,6 +351,7 @@ public class ShowController {
 	    	}
     	}
     	mongoClient2.close();
+    	
 	}
 	
 	private Show buildShowFromJson(JSONObject obj) {

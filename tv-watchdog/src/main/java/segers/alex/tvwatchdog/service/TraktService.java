@@ -13,10 +13,11 @@ import org.json.JSONObject;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import segers.alex.tvwatchdog.beans.Show;
+import segers.alex.tvwatchdog.dao.ShowDao;
 
 public class TraktService {
 	
-	MongoService mongoSvc;
+	ShowDao daoShow;
 
 	public ArrayList<JSONObject> getShowsDataFromTrakt(ArrayList<String> showSlugs) throws JSONException {
 		// this is the logic for downloading all possible info for a show upon first Search query to Trakt (via API)
@@ -29,7 +30,7 @@ public class TraktService {
 	    	shows.add(show);
 		}
 		
-		mongoSvc.mongoAddShows(shows);
+		daoShow.saveShows(shows);
 		
 		ArrayList<JSONObject> jsonShows = new ArrayList<>();
 		for (Show show : shows) {
@@ -68,7 +69,7 @@ public class TraktService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    		System.out.println("409 Response. Retrying...");
+	    		System.out.println("429 Response. Retrying...");
 	    		show = getLastEpisode(show);
 	    	}
 
@@ -154,7 +155,7 @@ public class TraktService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    		System.out.println("409 Response. Retrying...");
+	    		System.out.println("429 Response. Retrying...");
 	    		show = getNextEpisode(show);
 	    	}
 
@@ -194,7 +195,7 @@ public class TraktService {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-    		System.out.println("409 Response. Retrying...");
+    		System.out.println("429 Response. Retrying...");
     		show = getSingleShow(slug);
     	}
     	
@@ -244,7 +245,7 @@ public class TraktService {
         		System.out.println(count + "\t\t" + show.getTitle() + " (" + show.getYearLatest() +")");
         		count++;
         	}
-        	mongoSvc.mongoAddShows(showsToAddToMongo);
+        	daoShow.saveShows(showsToAddToMongo);
 	}
     
     private JSONObject buildJson(Show show) throws JSONException {
@@ -315,7 +316,7 @@ public class TraktService {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	    		System.out.println("409 Response. Retrying...");
+	    		System.out.println("429 Response. Retrying...");
 	    		Show show = getNextEpisodeProper(slugId); // why did I assign to a show? is this the cause of an issue?
 	    	}
 	    	
