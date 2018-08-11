@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.bson.Document;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.mongodb.MongoClient;

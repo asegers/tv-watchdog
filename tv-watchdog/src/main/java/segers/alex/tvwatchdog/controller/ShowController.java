@@ -10,7 +10,6 @@ import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,13 +22,11 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 
 import segers.alex.tvwatchdog.beans.Show;
-import segers.alex.tvwatchdog.dao.Dao;
 import segers.alex.tvwatchdog.dao.ShowDao;
 import segers.alex.tvwatchdog.service.TraktService;
 
 
 @RestController
-//@Component
 public class ShowController {
 
 	public TraktService traktSvc = new TraktService();
@@ -262,9 +259,10 @@ public class ShowController {
     		}
     		else {	// Next Episode Date response is null/empty
     			if (!show.getStatus().equals("newSeasonAnnounced")) {
+    				String previousStatus = show.getStatus();
     				show.setStatus("seasonEnded");
     				getShowApiCallShows.add(show);
-        			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + "newSeasonAnnounced" + " --> " + "seasonEnded");
+        			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + previousStatus + " --> " + "seasonEnded");
     			}
     		}
     		// can't update traktUpdatedOn bc don't get the date from Api call...
