@@ -2,6 +2,7 @@ package segers.alex.tvwatchdog.beans;
 
 import java.time.LocalDateTime;
 
+import org.bson.Document;
 import org.json.JSONObject;
 
 public class Show {
@@ -267,6 +268,47 @@ public class Show {
 
 	public void setDetail(String detail) {
 		this.detail = detail;
+	}
+
+	public Document toDocument() {
+		Document doc = new Document("title", this.getTitle())	
+    			.append("slug", this.getIdSlug())	
+    			.append("status", this.getStatus())	
+    			.append("yearBegin", this.getYearBegin())	
+    			.append("yearLatest", this.getYearLatest())	
+    			.append("currentSeason", this.getCurrentSeason());
+    	
+    	if (null != this.getNextEpDate()) {
+			doc
+			.append("nextEpisodeDate", this.getNextEpDate().toString())	
+			.append("nextEpisodeNum", this.getNextEpNumber());
+    	}
+    	else {
+    		doc
+			.append("nextEpisodeDate", "")	
+			.append("nextEpisodeNum", "");
+    	}
+    	if (null != this.getLatestEpDate()) {
+			doc
+			.append("latestEpisodeDate", this.getLatestEpDate().toString())	
+			.append("latestEpisodeSeasonNum", this.getLatestEpsSeasonNumber());
+    	}
+    	else {
+    		doc
+			.append("latestEpisodeDate", "")	
+			.append("latestEpisodeSeasonNum", "");
+    	}
+    	doc
+			.append("idTrakt", this.getIdTrakt())
+			.append("statusTrakt", this.getStatusTrakt());
+    	
+    	if (null != this.getUpdatedAtTrakt()) {
+			doc.append("traktUpdatedOn", this.getUpdatedAtTrakt().toString());
+    	}
+    	else {
+    		doc.append("traktUpdatedOn", "");
+    	}
+		return doc;
 	}
 	
 	

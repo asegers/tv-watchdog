@@ -87,7 +87,6 @@ public class TraktService {
 		show = getLastEpisode(show);
 		show.setCurrentSeason(getLatestSeasonNumber(show));
 		show.determineAndSetMyStatus();
-//		show = setDetails(show); //look into this... need most of this code now that setting detail/hover on the fly??
 		
 		return show;
 	}
@@ -203,7 +202,7 @@ public class TraktService {
     	return show;
 	}
 	
-    public void updateDatabaseWithTopShows2() throws JSONException {
+    public void updateDatabaseWithTopShows() throws JSONException {
     	
     	String popularShowsUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/popular"
         		+ "?extended=full" + "&limit=200";
@@ -245,6 +244,7 @@ public class TraktService {
         		System.out.println(count + "\t\t" + show.getTitle() + " (" + show.getYearLatest() +")");
         		count++;
         	}
+        	
         	daoShow.saveShows(showsToAddToMongo);
 	}
     

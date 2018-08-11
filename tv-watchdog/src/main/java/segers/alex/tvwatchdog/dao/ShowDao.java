@@ -3,16 +3,17 @@ package segers.alex.tvwatchdog.dao;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.bson.Document;
 import org.json.JSONObject;
 
 import com.mongodb.MongoClient;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.result.UpdateResult;
 
 import segers.alex.tvwatchdog.beans.Show;
 
@@ -23,31 +24,7 @@ public class ShowDao implements Dao<Show> {
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public List<Show> getAll() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void save(Show t) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void update(Show t, String[] params) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void delete(Show t) {
-		// TODO Auto-generated method stub
-		
-	}
-
+	
 	public ArrayList<Show> getShowsBySlugNames(ArrayList<String> slugs) {
 		MongoClient mongoClient = new MongoClient("localhost", 27017);
     	MongoDatabase database = mongoClient.getDatabase("local");
@@ -68,7 +45,75 @@ public class ShowDao implements Dao<Show> {
     	
     	return shows;
 	}
+
+	@Override
+	public ArrayList<Show> getAll() {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+    	MongoDatabase database = mongoClient.getDatabase("local");
+    	MongoCollection<Document> collection = database.getCollection("testeighty");
+    	
+    	FindIterable<Document> docs = collection.find();
+    	mongoClient.close();
+    	
+    	ArrayList<Show> allShows = new ArrayList<>();
+		for (Document doc : docs) {
+			JSONObject obj = new JSONObject(doc.toJson());
+			System.out.println("Retrieved " + obj.getString("title") + "...");
+			Show show = jsonToShow(obj);
+			allShows.add(show);
+		}
+		
+		return allShows;
+	}
+
+	@Override
+	public void save(Show t) {
+		// TODO Auto-generated method stub
+		
+	}
 	
+	public void saveShows(ArrayList<Show> shows) {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+    	MongoDatabase database = mongoClient.getDatabase("local");
+    	MongoCollection<Document> collection = database.getCollection("testeighty");
+		
+    	Document[] docs = showsToDocs(shows);
+    		
+    	for(Document doc : docs) {		
+	    	collection.insertOne(doc);
+    	}
+    	
+    	mongoClient.close();
+	}
+
+	@Override
+	public void update(Show t, String[] params) {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	public void updateShows(ArrayList<Show> shows) {
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+    	MongoDatabase database = mongoClient.getDatabase("local");
+    	MongoCollection<Document> collection = database.getCollection("testeighty");
+    	
+    	for(Show show : shows) {		
+    		Document doc = show.toDocument();
+	    	UpdateResult result = collection.replaceOne(Filters.eq("slug", show.getIdSlug()), doc);
+	    	if (result.getModifiedCount() == 1) {
+	    		System.out.println("Mongo updated: " + show.getTitle());
+	    	}
+    	}
+    	
+    	mongoClient.close();		
+	}
+
+	@Override
+	public void delete(Show t) {
+		// TODO Auto-generated method stub
+		
+	}
+
 	private Show jsonToShow(JSONObject obj) {
 		Show show = new Show();
 		show.setCurrentSeason(obj.getInt("currentSeason"));
@@ -101,55 +146,15 @@ public class ShowDao implements Dao<Show> {
 		
 		return show;
 	}
-
-	public void saveShows(ArrayList<Show> shows) {
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-    	MongoDatabase database = mongoClient.getDatabase("local");
-    	MongoCollection<Document> collection = database.getCollection("testeighty");
-		
-    	for (Show show : shows) {
-			
-    		Document doc = new Document("title", show.getTitle())	
-	    			.append("slug", show.getIdSlug())	
-	    			.append("status", show.getStatus())	
-	    			.append("yearBegin", show.getYearBegin())	
-	    			.append("yearLatest", show.getYearLatest())	
-	    			.append("currentSeason", show.getCurrentSeason());
-	    	
-	    	if (null != show.getNextEpDate()) {
-    			doc
-    			.append("nextEpisodeDate", show.getNextEpDate().toString())	
-    			.append("nextEpisodeNum", show.getNextEpNumber());
-	    	}
-	    	else {
-	    		doc
-    			.append("nextEpisodeDate", "")	
-    			.append("nextEpisodeNum", "");
-	    	}
-	    	if (null != show.getLatestEpDate()) {
-    			doc
-    			.append("latestEpisodeDate", show.getLatestEpDate().toString())	
-    			.append("latestEpisodeSeasonNum", show.getLatestEpsSeasonNumber());
-	    	}
-	    	else {
-	    		doc
-    			.append("latestEpisodeDate", "")	
-    			.append("latestEpisodeSeasonNum", "");
-	    	}
-	    	doc
-    			.append("idTrakt", show.getIdTrakt())
-    			.append("statusTrakt", show.getStatusTrakt());
-	    	
-	    	if (null != show.getUpdatedAtTrakt()) {
-    			doc.append("traktUpdatedOn", show.getUpdatedAtTrakt().toString());
-	    	}
-	    	else {
-	    		doc.append("traktUpdatedOn", "");
-	    	}
-    			
-	    	collection.insertOne(doc);
+	
+	private Document[] showsToDocs(ArrayList<Show> shows) {
+		ArrayList<Document> listDocs = new ArrayList<>();
+		for (Show show : shows) {
+			listDocs.add(show.toDocument());
     	}
-    	mongoClient.close();
+		Document[] docs = listDocs.toArray(new Document[listDocs.size()]);
+		
+		return docs;
 	}
 
 }
