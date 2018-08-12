@@ -4,6 +4,8 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
+    	classpath('org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2')
+
     }
 }
 
@@ -12,19 +14,7 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
-apply plugin: 'eclipse'
-eclipse {
-    project {
-        name = 'tvwatchdog'
-    }
-}
-
-bootJar {
-	baseName = 'tv-watchdog-web-app'
-    //baseName = 'gs-rest-service'
-    version =  '0.1.0'
-    //baseName = 'gs-accessing-data-mongodb
-}
+apply plugin: 'org.sonarqube'
 
 repositories {
     mavenCentral()
@@ -36,11 +26,28 @@ targetCompatibility = 1.8
 dependencies {
     compile("org.springframework.boot:spring-boot-starter-web")
 	compile('io.rest-assured:rest-assured:3.1.0')
-	// https://mvnrepository.com/artifact/org.json/json
 	compile group: 'org.json', name: 'json', version: '20180130'
 	
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('com.jayway.jsonpath:json-path')
+    
 }
 
+eclipse {
+    project {
+        name = 'tvwatchdog'
+    }
+}
+
+bootJar {
+	baseName = 'tv-watchdog-web-app'
+    version =  '0.1.0'
+}
+
+sonarqube{
+ properties {
+       property "sonar.projectKey", "tvwatchdog" 
+       // more keys
+     }
+}
