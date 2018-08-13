@@ -5,7 +5,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,29 +20,29 @@ import segers.alex.tvwatchdog.application.Application;
 @AutoConfigureMockMvc
 public class ShowControllerTests {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    public void paramSlugsShouldReturnShows() throws Exception {
+	@Test
+	public void paramSlugsShouldReturnShows() throws Exception {
 
-    	String[] testSlugs = {"breaking-bad", "game-of-thrones", "westworld"};
-    	
-        this.mockMvc.perform(get("/getShows").param("shows", testSlugs)).andDo(print()).andExpect(status().isOk())
-                .andExpect(jsonPath("$.shows.[0].title").value("Breaking Bad"))
-                .andExpect(jsonPath("$.shows.[0].detail").value(" (2008-2013)"))
-                .andExpect(jsonPath("$.shows.[1].title").value("Game of Thrones"))
-                .andExpect(jsonPath("$.shows.[2].title").value("Westworld"));
-    }
+		String[] testSlugs = { "breaking-bad", "game-of-thrones", "westworld" };
 
-    @Test
-    public void noParamsShouldReturnDefaultShows() throws Exception {
+		this.mockMvc.perform(get("/getShows").param("shows", testSlugs)).andDo(print()).andExpect(status().isOk())
+				.andExpect(jsonPath("$.shows.[0].title").value("Breaking Bad"))
+				.andExpect(jsonPath("$.shows.[0].detail").value(" (2008-2013)"))
+				.andExpect(jsonPath("$.shows.[1].title").value("Game of Thrones"))
+				.andExpect(jsonPath("$.shows.[2].title").value("Westworld"));
+	}
 
-    	this.mockMvc.perform(get("/getShows")).andDo(print()).andExpect(status().isOk())
-        .andExpect(jsonPath("$.shows.[0].title").value("Game of Thrones"))
-        .andExpect(jsonPath("$.shows.[1].title").value("Breaking Bad"))
-        .andExpect(jsonPath("$.shows.[1].detail").value(" (2008-2013)"))
-        .andExpect(jsonPath("$.shows.length()").value(2));
-    }
+	@Test
+	public void noParamsShouldReturnDefaultShows() throws Exception {
+
+		this.mockMvc.perform(get("/getShows")).andDo(print()).andExpect(status().isOk())
+				.andExpect(jsonPath("$.shows.[0].title").value("Game of Thrones"))
+				.andExpect(jsonPath("$.shows.[1].title").value("Breaking Bad"))
+				.andExpect(jsonPath("$.shows.[1].detail").value(" (2008-2013)"))
+				.andExpect(jsonPath("$.shows.length()").value(2));
+	}
 
 }

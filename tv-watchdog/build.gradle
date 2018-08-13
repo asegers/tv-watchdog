@@ -5,7 +5,6 @@ buildscript {
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE")
     	classpath('org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.6.2')
-
     }
 }
 
@@ -28,10 +27,12 @@ dependencies {
 	compile('io.rest-assured:rest-assured:3.1.0')
 	compile group: 'org.json', name: 'json', version: '20180130'
 	
+	compile group: 'org.apache.logging.log4j', name: 'log4j-api', version: '2.11.1'
+  	compile group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.11.1'
+	
 	compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     testCompile('org.springframework.boot:spring-boot-starter-test')
     testCompile('com.jayway.jsonpath:json-path')
-    
 }
 
 eclipse {

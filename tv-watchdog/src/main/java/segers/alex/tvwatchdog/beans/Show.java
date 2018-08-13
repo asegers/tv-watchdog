@@ -2,107 +2,88 @@ package segers.alex.tvwatchdog.beans;
 
 import java.time.LocalDateTime;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.bson.Document;
 import org.json.JSONObject;
 
 public class Show {
-	
+
 	private static final String NEXT_EPISODE_DATE = "nextEpisodeDate";
 	private static final String NEXT_EPISODE_NUMBER = "nextEpisodeNum";
 	private static final String LATEST_EPISODE_DATE = "latestEpisodeDate";
 	private static final String LATEST_EPISODE_SEASON_NUMBER = "latestEpisodeSeasonNum";
 	private static final String TRAKT_UPDATED_ON = "traktUpdatedOn";
-	
-// from trakt via REST API
+
+	final static Logger logger = LogManager.getLogger(Show.class);
+
+	// from trakt via REST API
 	private String title;
 	private int yearBegin;
 	private int idTrakt;
 	private String idSlug;
 	private String statusTrakt;
 	private LocalDateTime updatedAtTrakt;
-	
+
 	private LocalDateTime nextEpDate;
 	private int nextEpNumber;
 	private LocalDateTime latestEpDate;
 	private int latestEpsSeasonNumber;
-	
 
-// my generated vars
+	// my generated vars
 	private int currentSeason;
 	private int yearLatest;
 	private String status;
 	private String detail;
 	private String hoverDetail;
-	
+
 	public String toString() {
-		return "" +
-//		"UpdatedAt:\t " + getUpdatedAt() + "\n" +
-//		"UrlPicture:\t " + getUrlPicture() + "\n" +
-//		"IdTrakt:\t " + getIdTrakt() + "\n" +
-
-		"Id:\t " + getIdSlug() + "\n" +
-		"Title:\t " + getTitle() + "\n" +
-		"Year Began:\t " + getYearBegin() + "\n" +
-		"StatusTrakt:\t " + getStatusTrakt() + "\n" +
-		"MY STATUS:\t " + getStatus() + "\n" +
-		"Last Season's Year: " + getYearLatest() + "\n" +
-		"Current Season:\t " + getCurrentSeason() + "\n" +
-		"Last Episode:\t season #" + getLatestEpsSeasonNumber() + ", on " + getLatestEpDate() + "\n" +
-		"Next Episode:\t #" + getNextEpNumber() + " on " + getNextEpDate();
+		return "" + "Id:\t " + getIdSlug() + "\n" + "Title:\t " + getTitle() + "\n" + "Year Began:\t " + getYearBegin()
+				+ "\n" + "StatusTrakt:\t " + getStatusTrakt() + "\n" + "MY STATUS:\t " + getStatus() + "\n"
+				+ "Last Season's Year: " + getYearLatest() + "\n" + "Current Season:\t " + getCurrentSeason() + "\n"
+				+ "Last Episode:\t season #" + getLatestEpsSeasonNumber() + ", on " + getLatestEpDate() + "\n"
+				+ "Next Episode:\t #" + getNextEpNumber() + " on " + getNextEpDate();
 	}
-	
-	public JSONObject toJson() {
-    	JSONObject showJson = null;
 
-		showJson = new JSONObject()
-                .put("title", this.getTitle())
-                .put("slug", this.getIdSlug())
-                .put("status", this.getStatus())
-                .put("yearBegin", this.getYearBegin())
-                .put("yearLatest", this.getYearLatest())
-                .put("currentSeason", this.getCurrentSeason());
+	public JSONObject toJson() {
+		JSONObject showJson = null;
+
+		showJson = new JSONObject().put("title", this.getTitle()).put("slug", this.getIdSlug())
+				.put("status", this.getStatus()).put("yearBegin", this.getYearBegin())
+				.put("yearLatest", this.getYearLatest()).put("currentSeason", this.getCurrentSeason());
 		if (null != this.getNextEpDate()) {
-			showJson.put(NEXT_EPISODE_DATE, this.getNextEpDate().toString())	
-			.put(NEXT_EPISODE_NUMBER, this.getNextEpNumber());
-    	}
-		else {
-			showJson.put(NEXT_EPISODE_DATE, "")	
-			.put(NEXT_EPISODE_NUMBER, "");
-    	}
-		
+			showJson.put(NEXT_EPISODE_DATE, this.getNextEpDate().toString()).put(NEXT_EPISODE_NUMBER,
+					this.getNextEpNumber());
+		} else {
+			showJson.put(NEXT_EPISODE_DATE, "").put(NEXT_EPISODE_NUMBER, "");
+		}
+
 		if (null != this.getLatestEpDate()) {
-			showJson.put(LATEST_EPISODE_DATE, this.getLatestEpDate().toString())	
-			.put(LATEST_EPISODE_SEASON_NUMBER, this.getLatestEpsSeasonNumber());
-    	}
-    	else {
-    		showJson.put(LATEST_EPISODE_DATE, "")	
-			.put(LATEST_EPISODE_SEASON_NUMBER, "");
-    	}
-		
-		showJson
-                .put("idTrakt", this.getIdTrakt())
-                .put("statusTrakt", this.getStatusTrakt());
-		
-        if (null != this.getUpdatedAtTrakt()) {
+			showJson.put(LATEST_EPISODE_DATE, this.getLatestEpDate().toString()).put(LATEST_EPISODE_SEASON_NUMBER,
+					this.getLatestEpsSeasonNumber());
+		} else {
+			showJson.put(LATEST_EPISODE_DATE, "").put(LATEST_EPISODE_SEASON_NUMBER, "");
+		}
+
+		showJson.put("idTrakt", this.getIdTrakt()).put("statusTrakt", this.getStatusTrakt());
+
+		if (null != this.getUpdatedAtTrakt()) {
 			showJson.put(TRAKT_UPDATED_ON, this.getUpdatedAtTrakt().toString());
-    	}
-    	else {
-    		showJson.put(TRAKT_UPDATED_ON, "");
-    	}
-        
-        if (null != this.getDetail()) {
-			showJson.put("detail", this.getDetail().toString());
-    	}
-    	else {
-    		showJson.put("detail", "");
-    	}
-        
-        if (null != this.getHoverDetail()) {
-			showJson.put("hoverDate", this.getHoverDetail().toString());
-    	}
-    	else {
-    		showJson.put("hoverDate", "");
-    	}
+		} else {
+			showJson.put(TRAKT_UPDATED_ON, "");
+		}
+
+		if (null != this.getDetail()) {
+			showJson.put("detail", this.getDetail());
+		} else {
+			showJson.put("detail", "");
+		}
+
+		if (null != this.getHoverDetail()) {
+			showJson.put("hoverDate", this.getHoverDetail());
+		} else {
+			showJson.put("hoverDate", "");
+		}
 		return showJson;
 	}
 
@@ -110,43 +91,41 @@ public class Show {
 		String myStatus = "";
 		String traktStatus = this.getStatusTrakt();
 		if (traktStatus.equals("ended") || traktStatus.equals("canceled")) {
-	    	myStatus = "seriesEnded";
-	    }
-		else if (traktStatus.equals("returning series")) {
+			myStatus = "seriesEnded";
+		} else if (traktStatus.equals("returning series")) {
 			if (null != this.getNextEpDate()) {
 				if (this.getNextEpNumber() > 1) {
 					myStatus = "seasonCurrentlyAiring";
-				}
-				else {
+				} else {
 					myStatus = "newSeasonHasPremiereDate";
 				}
-			}
-			else {
+			} else {
 				if (this.getLatestEpsSeasonNumber() < this.getCurrentSeason()) {
 					myStatus = "newSeasonAnnounced";
-				}
-				else {
-					// if less than a year since last episode, then "seasonEnded"
-					// don't need this logic...? bc never will assume new season has been announced?
-					// see Bachelor in Paradise 2018.. know it is starting in next 1-2 months, but no non-gossip info on it even "being announced"
+				} else {
+					// if less than a year since last episode, then
+					// "seasonEnded"
+					// don't need this logic...? bc never will assume new season
+					// has been announced?
+					// see Bachelor in Paradise 2018.. know it is starting in
+					// next 1-2 months, but no non-gossip info on it even "being
+					// announced"
 					myStatus = "seasonEnded";
 				}
 			}
-		}
-		else {
-			//"planned" or "in-production"
+		} else {
+			// "planned" or "in-production"
 			if (null != this.getNextEpDate()) {
 				myStatus = "newSeasonHasPremiereDate";
-			}
-			else {
+			} else {
 				myStatus = "newSeasonAnnounced";
 			}
 		}
-		
+
 		this.setStatus(myStatus);
 		return myStatus;
 	}
-	
+
 	public String getTitle() {
 		return title;
 	}
@@ -194,7 +173,6 @@ public class Show {
 	public void setUpdatedAtTrakt(LocalDateTime updatedAt) {
 		this.updatedAtTrakt = updatedAt;
 	}
-
 
 	public LocalDateTime getNextEpDate() {
 		return nextEpDate;
@@ -269,44 +247,30 @@ public class Show {
 	}
 
 	public Document toDocument() {
-		Document doc = new Document("title", this.getTitle())	
-    			.append("slug", this.getIdSlug())	
-    			.append("status", this.getStatus())	
-    			.append("yearBegin", this.getYearBegin())	
-    			.append("yearLatest", this.getYearLatest())	
-    			.append("currentSeason", this.getCurrentSeason());
-    	
-    	if (null != this.getNextEpDate()) {
-			doc
-			.append(NEXT_EPISODE_DATE, this.getNextEpDate().toString())	
-			.append(NEXT_EPISODE_NUMBER, this.getNextEpNumber());
-    	}
-    	else {
-    		doc
-			.append(NEXT_EPISODE_DATE, "")	
-			.append(NEXT_EPISODE_NUMBER, "");
-    	}
-    	if (null != this.getLatestEpDate()) {
-			doc
-			.append(LATEST_EPISODE_DATE, this.getLatestEpDate().toString())	
-			.append(LATEST_EPISODE_SEASON_NUMBER, this.getLatestEpsSeasonNumber());
-    	}
-    	else {
-    		doc
-			.append(LATEST_EPISODE_DATE, "")	
-			.append(LATEST_EPISODE_SEASON_NUMBER, "");
-    	}
-    	doc
-			.append("idTrakt", this.getIdTrakt())
-			.append("statusTrakt", this.getStatusTrakt());
-    	
-    	if (null != this.getUpdatedAtTrakt()) {
+		Document doc = new Document("title", this.getTitle()).append("slug", this.getIdSlug())
+				.append("status", this.getStatus()).append("yearBegin", this.getYearBegin())
+				.append("yearLatest", this.getYearLatest()).append("currentSeason", this.getCurrentSeason());
+
+		if (null != this.getNextEpDate()) {
+			doc.append(NEXT_EPISODE_DATE, this.getNextEpDate().toString()).append(NEXT_EPISODE_NUMBER,
+					this.getNextEpNumber());
+		} else {
+			doc.append(NEXT_EPISODE_DATE, "").append(NEXT_EPISODE_NUMBER, "");
+		}
+		if (null != this.getLatestEpDate()) {
+			doc.append(LATEST_EPISODE_DATE, this.getLatestEpDate().toString()).append(LATEST_EPISODE_SEASON_NUMBER,
+					this.getLatestEpsSeasonNumber());
+		} else {
+			doc.append(LATEST_EPISODE_DATE, "").append(LATEST_EPISODE_SEASON_NUMBER, "");
+		}
+		doc.append("idTrakt", this.getIdTrakt()).append("statusTrakt", this.getStatusTrakt());
+
+		if (null != this.getUpdatedAtTrakt()) {
 			doc.append(TRAKT_UPDATED_ON, this.getUpdatedAtTrakt().toString());
-    	}
-    	else {
-    		doc.append(TRAKT_UPDATED_ON, "");
-    	}
+		} else {
+			doc.append(TRAKT_UPDATED_ON, "");
+		}
 		return doc;
 	}
-	
+
 }

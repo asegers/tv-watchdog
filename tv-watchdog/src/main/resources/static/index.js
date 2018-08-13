@@ -35,33 +35,32 @@ var url = "http://localhost:8080/getShows?shows="; //sort=" + "" + "&
 var stored = localStorage['myShowsJson'];
 if (stored) {
 	myShows = JSON.parse(stored);
-}
-else {
-	myShows = ["breaking-bad", "westworld"]; // default list
+} else {
+	myShows = [ "breaking-bad", "westworld" ]; // default list
 	localStorage['myShowsJson'] = JSON.stringify(myShows);
 }
 
 for (var i = 0; i < myShows.length; i++) {
 	url += myShows[i];
-	if(i < myShows.length - 1) url += ",";
+	if (i < myShows.length - 1)
+		url += ",";
 }
 
-
 xmlhttp.onreadystatechange = function() {
-    if (this.readyState == 4 && this.status == 200) {
-        var myArr = JSON.parse(this.responseText); //edit?
-        console.log(myArr);
-  //      document.getElementById("id01").innerHTML = myArr[0].title.toString();
-//        setSortMethod()
-        myFunction(myArr);
-    }
+	if (this.readyState == 4 && this.status == 200) {
+		var myArr = JSON.parse(this.responseText); //edit?
+		console.log(myArr);
+		//      document.getElementById("id01").innerHTML = myArr[0].title.toString();
+		//        setSortMethod()
+		myFunction(myArr);
+	}
 };
 xmlhttp.open("GET", url, true);
 xmlhttp.send();
 
 function myFunction(arr) {
 	shows = arr.shows;
-	
+
 	/*if (sortSwitch.localeCompare("alphabetical") == 0) {
 		// sort
 	    shows.sort(function(a, b){
@@ -78,203 +77,225 @@ function myFunction(arr) {
 		});
 	} */
 	/*else {*/
-		//neat sort: (currentlyAiring) "New Ep airs in...", (newSeasonHasDate) "New season premieres in...", [Ready for binging in...], 
-		// (seasonEnded, < 1.5yr since lastEp) "Ready to binge:", (seasonAnnounced) "News:", (seasonEnded, >1.5yr) "Awaiting updates", (seriesEnded) "Ended series:"
-		
-		//temp workaround (re-assign each show's detail.. may want to move this to Java, or possibly move original detail assignment to js also)
-		var newEpAirings = new Array(); newSeasonDates = new Array(); recentBingables = new Array(); news = new Array(); awaitingUpdates = new Array(); ended = new Array();
-		for (var i = 0; i < shows.length; i++) {
-			var status = shows[i].status;
-			var show = shows[i];
-			switch(status) {
-			
-			case "seasonCurrentlyAiring":
-				var detail = show.detail;
-				var newDetail = detail.replace(" till new episode", "");
-				show.detail = newDetail;
-				newEpAirings.push(show);
-				break;
-				
-			case "newSeasonHasPremiereDate": // once interest levels are implemented, will need to update this logic (i.e. whether a series shows as "x days till new season" or "recently bingable"/etc.)
-				var detail = show.detail;
-				var newDetail = detail.replace(" premiere", "");
-				show.detail = newDetail;
-				newSeasonDates.push(show);
-				break;
-				
-			case "seasonEnded": 
-				//if less than 1y
-				// TO DO: group by recency (<3 mos., 3-6 mos, 6mos-year)
-				var dateLastEp = new Date(show.latestEpisodeDate);
-				var dateToday = new Date().getTime();
-				var millisecondsSinceLastEpisode = dateToday - dateLastEp;
-				var yearInMillisecs = 31540000000;
-				if(millisecondsSinceLastEpisode <= yearInMillisecs) {
-					var dateString = (dateLastEp.toDateString()).substr(4,(dateLastEp.toDateString()).length);
-					show.detail = " - Season " + show.currentSeason + " (as of " + dateString + ")";
-					recentBingables.push(show);
-				}
-				else {
-					show.detail = "";
-					awaitingUpdates.push(show);
-				}
-				break;
-			
-			case "newSeasonAnnounced":
-				show.detail = " - Season " + show.currentSeason + " announced! (date TBA)";
-				news.push(show);
-				break;
-				
-			case "seriesEnded":
-				ended.push(show);
-				break;
+	//neat sort: (currentlyAiring) "New Ep airs in...", (newSeasonHasDate) "New season premieres in...", [Ready for binging in...], 
+	// (seasonEnded, < 1.5yr since lastEp) "Ready to binge:", (seasonAnnounced) "News:", (seasonEnded, >1.5yr) "Awaiting updates", (seriesEnded) "Ended series:"
+	//temp workaround (re-assign each show's detail.. may want to move this to Java, or possibly move original detail assignment to js also)
+	var newEpAirings = new Array();
+	newSeasonDates = new Array();
+	recentBingables = new Array();
+	news = new Array();
+	awaitingUpdates = new Array();
+	ended = new Array();
+	for (var i = 0; i < shows.length; i++) {
+		var status = shows[i].status;
+		var show = shows[i];
+		switch (status) {
+
+		case "seasonCurrentlyAiring":
+			var detail = show.detail;
+			var newDetail = detail.replace(" till new episode", "");
+			show.detail = newDetail;
+			newEpAirings.push(show);
+			break;
+
+		case "newSeasonHasPremiereDate": // once interest levels are implemented, will need to update this logic (i.e. whether a series shows as "x days till new season" or "recently bingable"/etc.)
+			var detail = show.detail;
+			var newDetail = detail.replace(" premiere", "");
+			show.detail = newDetail;
+			newSeasonDates.push(show);
+			break;
+
+		case "seasonEnded":
+			//if less than 1y
+			// TO DO: group by recency (<3 mos., 3-6 mos, 6mos-year)
+			var dateLastEp = new Date(show.latestEpisodeDate);
+			var dateToday = new Date().getTime();
+			var millisecondsSinceLastEpisode = dateToday - dateLastEp;
+			var yearInMillisecs = 31540000000;
+			if (millisecondsSinceLastEpisode <= yearInMillisecs) {
+				var dateString = (dateLastEp.toDateString()).substr(4,
+						(dateLastEp.toDateString()).length);
+				show.detail = " - Season " + show.currentSeason + " (as of "
+						+ dateString + ")";
+				recentBingables.push(show);
+			} else {
+				show.detail = "";
+				awaitingUpdates.push(show);
 			}
+			break;
+
+		case "newSeasonAnnounced":
+			show.detail = " - Season " + show.currentSeason
+					+ " announced! (date TBA)";
+			news.push(show);
+			break;
+
+		case "seriesEnded":
+			ended.push(show);
+			break;
 		}
+	}
 	/*}*/
 
-// display...
+	// display...
 	var showTitle = "";
 	var out = "";
 	var dateLoc = 0;
-//    var i;
-    var showJsonString = "";
-    /* var urlWithShowsString = "http://localhost:8080/?shows="; */
-    
-    /*if (sortSwitch.localeCompare("alphabetical") == 0) {		// ALPHA-SORT:
-    	out = addShowstoOutput(shows);
-    } 
-    else {		*/// BEST SORT:
-    	
-    	if (null != newEpAirings[0]) {
-    		newEpAirings.sort(function(a, b){
-    	    	aDate = new Date(a.nextEpisodeDate).getTime(); 
-    	    	bDate = new Date(b.nextEpisodeDate).getTime(); 
-    		  	return aDate > bDate;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "New Episode airs in...<br>";
-	    	out += addShowstoOutput(newEpAirings);
-	    	out += "<br>";
-    	}
-    	
-    	if (null != newSeasonDates[0]) {
-    		newSeasonDates.sort(function(a, b){
-    	    	aDate = new Date(a.latestEpisodeDate); 
-    	    	bDate = new Date(b.latestEpisodeDate); 
-    		  	return aDate > bDate;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "New Season premieres in...<br>";
-	    	out += addShowstoOutput(newSeasonDates);
-	    	out += "<br>";
-    	}
-    	
-    	if (null != recentBingables[0]) {
-    		recentBingables.sort(function(a, b){
-    	    	aDate = new Date(a.latestEpisodeDate); 
-    	    	bDate = new Date(b.latestEpisodeDate); 
-    		  	return aDate < bDate;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "Ready to Binge:<br>";
-	    	out += addShowstoOutput(recentBingables);
-	    	out += "<br>";
-    	}
-    	
-    	if (null != news[0]) {
-    		news.sort(function(a, b){
-    	    	// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
-    	    	aTitle = (a.title).toUpperCase(); 
-    	    	if(aTitle.startsWith("A ")) aTitle = aTitle.substr(2, aTitle.length - 1);
-    	    	if(aTitle.startsWith("THE ")) aTitle = aTitle.substr(4, aTitle.length - 1);
-    	    	
-    	    	bTitle = (b.title).toUpperCase();
-    	    	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
-    	    	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
-    	    	
-    		  	return aTitle > bTitle;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "News:<br>";
-	    	out += addShowstoOutput(news);
-	    	out += "<br>";
-    	}
-    	
-    	if (null != awaitingUpdates[0]) {
-    		awaitingUpdates.sort(function(a, b){
-    	    	// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
-    	    	aTitle = (a.title).toUpperCase(); 
-    	    	if(aTitle.startsWith("A ")) aTitle = aTitle.substr(2, aTitle.length - 1);
-    	    	if(aTitle.startsWith("THE ")) aTitle = aTitle.substr(4, aTitle.length - 1);
-    	    	
-    	    	bTitle = (b.title).toUpperCase();
-    	    	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
-    	    	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
-    	    	
-    		  	return aTitle > bTitle;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "Awaiting Updates...<br>";
-	    	out += addShowstoOutput(awaitingUpdates);
-	    	out += "<br>";
-    	}
-    	
-    	if (null != ended[0]) {
-    		ended.sort(function(a, b){
-    	    	// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
-    	    	aTitle = (a.title).toUpperCase(); 
-    	    	if(aTitle.startsWith("A ")) aTitle = aTitle.substr(2, aTitle.length - 1);
-    	    	if(aTitle.startsWith("THE ")) aTitle = aTitle.substr(4, aTitle.length - 1);
-    	    	
-    	    	bTitle = (b.title).toUpperCase();
-    	    	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
-    	    	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
-    	    	
-    		  	return aTitle > bTitle;
-    		});
-    		if (!urlWithShowsString.endsWith("=")) urlWithShowsString += ",";
-	    	out += "Completed Series:<br>";
-	    	out += addShowstoOutput(ended);
-    	}
-    /*}*/
-//    if (urlWithShowsString.endsWith(",")) urlWithShowsString = urlWithShowsString.substr(0, urlWithShowsString.length - 1);
-    
-    document.getElementById("id01").innerHTML = out;
+	//    var i;
+	var showJsonString = "";
+	/* var urlWithShowsString = "http://localhost:8080/?shows="; */
+
+	/*if (sortSwitch.localeCompare("alphabetical") == 0) {		// ALPHA-SORT:
+		out = addShowstoOutput(shows);
+	} 
+	else {		*/// BEST SORT:
+	if (null != newEpAirings[0]) {
+		newEpAirings.sort(function(a, b) {
+			aDate = new Date(a.nextEpisodeDate).getTime();
+			bDate = new Date(b.nextEpisodeDate).getTime();
+			return aDate > bDate;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "New Episode airs in...<br>";
+		out += addShowstoOutput(newEpAirings);
+		out += "<br>";
+	}
+
+	if (null != newSeasonDates[0]) {
+		newSeasonDates.sort(function(a, b) {
+			aDate = new Date(a.latestEpisodeDate);
+			bDate = new Date(b.latestEpisodeDate);
+			return aDate > bDate;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "New Season premieres in...<br>";
+		out += addShowstoOutput(newSeasonDates);
+		out += "<br>";
+	}
+
+	if (null != recentBingables[0]) {
+		recentBingables.sort(function(a, b) {
+			aDate = new Date(a.latestEpisodeDate);
+			bDate = new Date(b.latestEpisodeDate);
+			return aDate < bDate;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "Ready to Binge:<br>";
+		out += addShowstoOutput(recentBingables);
+		out += "<br>";
+	}
+
+	if (null != news[0]) {
+		news.sort(function(a, b) {
+			// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
+			aTitle = (a.title).toUpperCase();
+			if (aTitle.startsWith("A "))
+				aTitle = aTitle.substr(2, aTitle.length - 1);
+			if (aTitle.startsWith("THE "))
+				aTitle = aTitle.substr(4, aTitle.length - 1);
+
+			bTitle = (b.title).toUpperCase();
+			if (bTitle.startsWith("A "))
+				bTitle = bTitle.substr(2, bTitle.length - 1);
+			if (bTitle.startsWith("THE "))
+				bTitle = bTitle.substr(4, bTitle.length - 1);
+
+			return aTitle > bTitle;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "News:<br>";
+		out += addShowstoOutput(news);
+		out += "<br>";
+	}
+
+	if (null != awaitingUpdates[0]) {
+		awaitingUpdates.sort(function(a, b) {
+			// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
+			aTitle = (a.title).toUpperCase();
+			if (aTitle.startsWith("A "))
+				aTitle = aTitle.substr(2, aTitle.length - 1);
+			if (aTitle.startsWith("THE "))
+				aTitle = aTitle.substr(4, aTitle.length - 1);
+
+			bTitle = (b.title).toUpperCase();
+			if (bTitle.startsWith("A "))
+				bTitle = bTitle.substr(2, bTitle.length - 1);
+			if (bTitle.startsWith("THE "))
+				bTitle = bTitle.substr(4, bTitle.length - 1);
+
+			return aTitle > bTitle;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "Awaiting Updates...<br>";
+		out += addShowstoOutput(awaitingUpdates);
+		out += "<br>";
+	}
+
+	if (null != ended[0]) {
+		ended.sort(function(a, b) {
+			// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
+			aTitle = (a.title).toUpperCase();
+			if (aTitle.startsWith("A "))
+				aTitle = aTitle.substr(2, aTitle.length - 1);
+			if (aTitle.startsWith("THE "))
+				aTitle = aTitle.substr(4, aTitle.length - 1);
+
+			bTitle = (b.title).toUpperCase();
+			if (bTitle.startsWith("A "))
+				bTitle = bTitle.substr(2, bTitle.length - 1);
+			if (bTitle.startsWith("THE "))
+				bTitle = bTitle.substr(4, bTitle.length - 1);
+
+			return aTitle > bTitle;
+		});
+		if (!urlWithShowsString.endsWith("="))
+			urlWithShowsString += ",";
+		out += "Completed Series:<br>";
+		out += addShowstoOutput(ended);
+	}
+	/*}*/
+	//    if (urlWithShowsString.endsWith(",")) urlWithShowsString = urlWithShowsString.substr(0, urlWithShowsString.length - 1);
+	document.getElementById("id01").innerHTML = out;
 }
-function addShowstoOutput(shows)  {
+function addShowstoOutput(shows) {
 	var tempOut = "";
-	
-	for(var i = 0; i < shows.length; i++) {
+
+	for (var i = 0; i < shows.length; i++) {
 		var singleShowOutput = addSingleShowToTempOutputString(shows[i]);
 		tempOut += singleShowOutput;
-		
+
 		urlWithShowsString += shows[i].slug;
 		if (i < (shows.length - 1)) {
 			urlWithShowsString += ",";
 		}
-		
-	    // next line
+
+		// next line
 		tempOut += "<br>";
-	    
-	    // check for extra break for alphabetical sort
-	 /*   if (sortSwitch.localeCompare("alphabetical") == 0 && null != shows[i+1]) {
-	    	var currentTitle = shows[i].title.toUpperCase();
-	    	var nextTitle = shows[i+1].title.toUpperCase();
-	    	if(currentTitle.startsWith("A ")) currentTitle = currentTitle.substr(2, currentTitle.length - 1);
-	    	if(currentTitle.startsWith("THE ")) currentTitle = currentTitle.substr(4, currentTitle.length - 1);
-	    	if(nextTitle.startsWith("A ")) nextTitle = nextTitle.substr(2, nextTitle.length - 1);
-	    	if(nextTitle.startsWith("THE ")) nextTitle = nextTitle.substr(4, nextTitle.length - 1);
-	    	if (nextTitle.substr(0,1) > currentTitle.substr(0,1)) {
-	    		tempOut += "<br>";
-	    	}
-	    } */
+
+		// check for extra break for alphabetical sort
+		/*   if (sortSwitch.localeCompare("alphabetical") == 0 && null != shows[i+1]) {
+		   	var currentTitle = shows[i].title.toUpperCase();
+		   	var nextTitle = shows[i+1].title.toUpperCase();
+		   	if(currentTitle.startsWith("A ")) currentTitle = currentTitle.substr(2, currentTitle.length - 1);
+		   	if(currentTitle.startsWith("THE ")) currentTitle = currentTitle.substr(4, currentTitle.length - 1);
+		   	if(nextTitle.startsWith("A ")) nextTitle = nextTitle.substr(2, nextTitle.length - 1);
+		   	if(nextTitle.startsWith("THE ")) nextTitle = nextTitle.substr(4, nextTitle.length - 1);
+		   	if (nextTitle.substr(0,1) > currentTitle.substr(0,1)) {
+		   		tempOut += "<br>";
+		   	}
+		   } */
 	}
 	return tempOut;
 }
 
-function addSingleShowToTempOutputString(show){
+function addSingleShowToTempOutputString(show) {
 	var out = "";
-	
+
 	/*if (sortSwitch.localeCompare("alphabetical") == 0) {
 		// since you've now done this, perhaps you don't need all the a/the checks for sorting, etc down below...
 		// only need this for alpha sort? "A/The" looks fine when "best" sort?
@@ -284,16 +305,17 @@ function addSingleShowToTempOutputString(show){
 	}*/
 	// TITLE
 	showTitle = "<b>" + show.title + "</b>" + show.detail;
- 
+
 	// add calendar icon/date tooltip if it's a countdown detail.
-    if ((show.status).localeCompare("seasonCurrentlyAiring") == 0 || (show.status).localeCompare("newSeasonHasPremiereDate") == 0) {
-    	out += showTitle + " <div class=\"tooltip\"> <i class=\"fa fa-calendar\"></i> <span class=\"tooltiptext tooltip-right\">" 
-    	+ show.hoverDate + "</span></div>";
-    } 
-    else {
-    	out += showTitle;
-    }
-    return out;
+	if ((show.status).localeCompare("seasonCurrentlyAiring") == 0
+			|| (show.status).localeCompare("newSeasonHasPremiereDate") == 0) {
+		out += showTitle
+				+ " <div class=\"tooltip\"> <i class=\"fa fa-calendar\"></i> <span class=\"tooltiptext tooltip-right\">"
+				+ show.hoverDate + "</span></div>";
+	} else {
+		out += showTitle;
+	}
+	return out;
 }
 
 function updateSort() {
@@ -302,11 +324,10 @@ function updateSort() {
 	var urlForSort = new URL(urlWithShowsString);
 	if (aToZ.checked) {
 		urlForSort.searchParams.set("sort", "alphabetical");
-	}
-	else {
+	} else {
 		urlForSort.searchParams.set("sort", "default");
 	}
-//	bookmarkString = urlForSort.toString();
+	//	bookmarkString = urlForSort.toString();
 	setTimeout(refreshPage(), 1000);
 }
 
@@ -314,22 +335,21 @@ function addShowAndRefresh(element) {
 	// TO DO: Fix issue with adding a show with apostrophe (e.g. Marvel's Jessica Jones adds Luke Cage instead..)
 	var searchTitle = document.getElementById("myInput").value;
 	var slug = "";
-	
+
 	for (var i = 0; i < showsToAddList.length; i++) {
 		if (showsToAddList[i].title.startsWith(searchTitle)) {
 			slug = showsToAddList[i].slug;
 			break;
 		}
 	}
-	
+
 	// TO DO: If no matches in the Top 200 list, then need to search Mongodb, have modal pop-up, user select correct show, etc.
-	
+
 	// Getting user's shows from local storage...
 	var stored = localStorage['myShowsJson'];
 	if (stored) {
 		myShows = JSON.parse(stored);
-	}
-	else {
+	} else {
 		myShows = new Array(); // change this to what exactly?
 	}
 
@@ -351,139 +371,108 @@ function clearMyShows() {
 }
 
 function autocomplete(inp, arr) {
-	  /*the autocomplete function takes two arguments,
-	  the text field element and an array of possible autocompleted values:*/
-	  var currentFocus;
-	  /*execute a function when someone writes in the text field:*/
-	  inp.addEventListener("input", function(e) {
-	      var a, b, i, val = this.value;
-	      /*close any already open lists of autocompleted values*/
-	      closeAllLists();
-	      if (!val) { return false;}
-	      currentFocus = -1;
-	      /*create a DIV element that will contain the items (values):*/
-	      a = document.createElement("DIV");
-	      a.setAttribute("id", this.id + "autocomplete-list");
-	      a.setAttribute("class", "autocomplete-items");
-	      /*append the DIV element as a child of the autocomplete container:*/
-	      this.parentNode.appendChild(a);
-	      /*for each item in the array...*/
-	      for (i = 0; i < arr.length; i++) {
-	        /*check if the item starts with the same letters as the text field value:*/
-	        if (arr[i].title.substr(0, val.length).toUpperCase() == val.toUpperCase()) {
-	          /*create a DIV element for each matching element:*/
-	          b = document.createElement("DIV");
-	          /*make the matching letters bold:*/
-	          b.innerHTML = "<strong>" + arr[i].title.substr(0, val.length) + "</strong>";
-	          b.innerHTML += arr[i].title.substr(val.length);
-	          /*insert a input field that will hold the current array item's value:*/
-	          b.innerHTML += "<input type='hidden' value='" + arr[i].title + "'>";
-	          /*execute a function when someone clicks on the item value (DIV element):*/
-	              b.addEventListener("click", function(e) {
-	              /*insert the value for the autocomplete text field:*/
-	              inp.value = this.getElementsByTagName("input")[0].value;
-	              /*close the list of autocompleted values,
-	              (or any other open lists of autocompleted values:*/
-	              closeAllLists();
-	          });
-	          a.appendChild(b);
-	        }
-	      }
-	  });
-	  /*execute a function presses a key on the keyboard:*/
-	  inp.addEventListener("keydown", function(e) {
-	      var x = document.getElementById(this.id + "autocomplete-list");
-	      if (x) x = x.getElementsByTagName("div");
-	      if (e.keyCode == 40) {
-	        /*If the arrow DOWN key is pressed,
-	        increase the currentFocus variable:*/
-	        currentFocus++;
-	        /*and and make the current item more visible:*/
-	        addActive(x);
-	      } else if (e.keyCode == 38) { //up
-	        /*If the arrow UP key is pressed,
-	        decrease the currentFocus variable:*/
-	        currentFocus--;
-	        /*and and make the current item more visible:*/
-	        addActive(x);
-	      } else if (e.keyCode == 13) {
-	        /*If the ENTER key is pressed, prevent the form from being submitted,*/
-	        e.preventDefault();
-	        if (currentFocus > -1) {
-	          /*and simulate a click on the "active" item:*/
-	          if (x) x[currentFocus].click();
-	        }
-	      }
-	  });
-	  function addActive(x) {
-	    /*a function to classify an item as "active":*/
-	    if (!x) return false;
-	    /*start by removing the "active" class on all items:*/
-	    removeActive(x);
-	    if (currentFocus >= x.length) currentFocus = 0;
-	    if (currentFocus < 0) currentFocus = (x.length - 1);
-	    /*add class "autocomplete-active":*/
-	    x[currentFocus].classList.add("autocomplete-active");
-	  }
-	  function removeActive(x) {
-	    /*a function to remove the "active" class from all autocomplete items:*/
-	    for (var i = 0; i < x.length; i++) {
-	      x[i].classList.remove("autocomplete-active");
-	    }
-	  }
-	  function closeAllLists(elmnt) {
-	    /*close all autocomplete lists in the document,
-	    except the one passed as an argument:*/
-	    var x = document.getElementsByClassName("autocomplete-items");
-	    for (var i = 0; i < x.length; i++) {
-	      if (elmnt != x[i] && elmnt != inp) {
-	      x[i].parentNode.removeChild(x[i]);
-	    }
-	  }
+	/*the autocomplete function takes two arguments,
+	the text field element and an array of possible autocompleted values:*/
+	var currentFocus;
+	/*execute a function when someone writes in the text field:*/
+	inp.addEventListener("input", function(e) {
+		var a, b, i, val = this.value;
+		/*close any already open lists of autocompleted values*/
+		closeAllLists();
+		if (!val) {
+			return false;
+		}
+		currentFocus = -1;
+		/*create a DIV element that will contain the items (values):*/
+		a = document.createElement("DIV");
+		a.setAttribute("id", this.id + "autocomplete-list");
+		a.setAttribute("class", "autocomplete-items");
+		/*append the DIV element as a child of the autocomplete container:*/
+		this.parentNode.appendChild(a);
+		/*for each item in the array...*/
+		for (i = 0; i < arr.length; i++) {
+			/*check if the item starts with the same letters as the text field value:*/
+			if (arr[i].title.substr(0, val.length).toUpperCase() == val
+					.toUpperCase()) {
+				/*create a DIV element for each matching element:*/
+				b = document.createElement("DIV");
+				/*make the matching letters bold:*/
+				b.innerHTML = "<strong>" + arr[i].title.substr(0, val.length)
+						+ "</strong>";
+				b.innerHTML += arr[i].title.substr(val.length);
+				/*insert a input field that will hold the current array item's value:*/
+				b.innerHTML += "<input type='hidden' value='" + arr[i].title
+						+ "'>";
+				/*execute a function when someone clicks on the item value (DIV element):*/
+				b.addEventListener("click", function(e) {
+					/*insert the value for the autocomplete text field:*/
+					inp.value = this.getElementsByTagName("input")[0].value;
+					/*close the list of autocompleted values,
+					(or any other open lists of autocompleted values:*/
+					closeAllLists();
+				});
+				a.appendChild(b);
+			}
+		}
+	});
+	/*execute a function presses a key on the keyboard:*/
+	inp.addEventListener("keydown", function(e) {
+		var x = document.getElementById(this.id + "autocomplete-list");
+		if (x)
+			x = x.getElementsByTagName("div");
+		if (e.keyCode == 40) {
+			/*If the arrow DOWN key is pressed,
+			increase the currentFocus variable:*/
+			currentFocus++;
+			/*and and make the current item more visible:*/
+			addActive(x);
+		} else if (e.keyCode == 38) { //up
+			/*If the arrow UP key is pressed,
+			decrease the currentFocus variable:*/
+			currentFocus--;
+			/*and and make the current item more visible:*/
+			addActive(x);
+		} else if (e.keyCode == 13) {
+			/*If the ENTER key is pressed, prevent the form from being submitted,*/
+			e.preventDefault();
+			if (currentFocus > -1) {
+				/*and simulate a click on the "active" item:*/
+				if (x)
+					x[currentFocus].click();
+			}
+		}
+	});
+	function addActive(x) {
+		/*a function to classify an item as "active":*/
+		if (!x)
+			return false;
+		/*start by removing the "active" class on all items:*/
+		removeActive(x);
+		if (currentFocus >= x.length)
+			currentFocus = 0;
+		if (currentFocus < 0)
+			currentFocus = (x.length - 1);
+		/*add class "autocomplete-active":*/
+		x[currentFocus].classList.add("autocomplete-active");
+	}
+	function removeActive(x) {
+		/*a function to remove the "active" class from all autocomplete items:*/
+		for (var i = 0; i < x.length; i++) {
+			x[i].classList.remove("autocomplete-active");
+		}
+	}
+	function closeAllLists(elmnt) {
+		/*close all autocomplete lists in the document,
+		except the one passed as an argument:*/
+		var x = document.getElementsByClassName("autocomplete-items");
+		for (var i = 0; i < x.length; i++) {
+			if (elmnt != x[i] && elmnt != inp) {
+				x[i].parentNode.removeChild(x[i]);
+			}
+		}
 	}
 	/*execute a function when someone clicks in the document:*/
-	document.addEventListener("click", function (e) {
-	    closeAllLists(e.target);
+	document.addEventListener("click", function(e) {
+		closeAllLists(e.target);
 	});
-	}
-	
-/* 	function launchModal(tvShow) {
-		var jsonShow = JSON.parse(tvShow);
-		var modal = new tingle.modal({
-		    footer: true,
-		    stickyFooter: false,
-		    closeMethods: ['overlay', 'button', 'escape'],
-		    closeLabel: "Close",
-		 //   cssClass: ['custom-class-1', 'custom-class-2'],
-		    onOpen: function() {
-		        console.log('modal open');
-		    },
-		    onClose: function() {
-		        console.log('modal closed');
-		    },
-		    beforeClose: function() {
-		        // here's goes some logic
-		        // e.g. save content before closing the modal
-		        //alert('test');
-		        return true; // close the modal
-		        return false; // nothing happens
-		    }
-		});
-	
-		// set content
-		modal.setContent('<h1>' + jsonShow.show.title + '</h1>');
-	
-		// add a button
-		modal.addFooterBtn('Button label', 'tingle-btn tingle-btn--primary', function() {
-		    // here goes some logic
-		    console.log('sup');
-		    modal.close();
-		});
-		 modal.open();
-	}; */
-	
-// 	 var button = document.getElementById("clickable-title");
-// 	button.onClick = function(){
-// 		launchModal(/* show */);
-// 	}
-	
+}
