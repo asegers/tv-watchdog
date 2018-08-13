@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import org.json.JSONException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -18,10 +19,17 @@ import segers.alex.tvwatchdog.util.TvWatchdogUtil;
 @RestController
 public class ShowController {
 
-	public TraktService traktSvc = new TraktService();
-	public ShowDao daoShow = new ShowDao();
-	public TvWatchdogUtil helper = new TvWatchdogUtil();
-	public UpdateCheckService updateCheckSvc = new UpdateCheckService();
+	@Autowired
+	TraktService traktSvc;
+	
+	@Autowired
+	UpdateCheckService updateCheckSvc;
+	
+	@Autowired
+	TvWatchdogUtil helper;
+	
+	@Autowired
+	ShowDao daoShow;
 
     
     @RequestMapping("/getShows")

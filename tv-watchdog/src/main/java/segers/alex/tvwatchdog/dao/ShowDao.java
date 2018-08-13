@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.bson.Document;
 import org.json.JSONObject;
+import org.springframework.stereotype.Repository;
 
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
@@ -17,50 +18,59 @@ import com.mongodb.client.result.UpdateResult;
 
 import segers.alex.tvwatchdog.beans.Show;
 
+@Repository
 public class ShowDao implements Dao<Show> {
 
+	private static final String HOST_NAME = "localhost";
+	private static final int PORT_NUMBER = 27017;
+	private static final String DATABASE_NAME = "local";
+	private static final String COLLECTION_NAME = "testeighty";
+
+
+	
 	@Override
 	public Optional<Show> get(long id) {
 		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 	
 	public ArrayList<Show> getShowsBySlugNames(ArrayList<String> slugs) {
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-    	MongoDatabase database = mongoClient.getDatabase("local");
-    	MongoCollection<Document> collection = database.getCollection("testeighty");
-    	
     	ArrayList<Show> shows = new ArrayList<>();
+
+		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+	    	MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+	    	MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+	    	
+	    	for (String slug : slugs) {
+	    		System.out.println("Searching db for... " + slug);
+	    		if (null != collection.find(Filters.eq("slug", slug)).first()) {
+	    			String json = collection.find(Filters.eq("slug", slug)).first().toJson();
+	            	JSONObject obj = new JSONObject(json);
+	            	Show show = jsonToShow(obj);
+	            	shows.add(show);
+	        	}
+	    	}
+		}
     	
-    	for (String slug : slugs) {
-    		System.out.println("Searching db for... " + slug);
-    		if (null != collection.find(Filters.eq("slug", slug)).first()) {
-    			String json = collection.find(Filters.eq("slug", slug)).first().toJson();
-            	JSONObject obj = new JSONObject(json);
-            	Show show = jsonToShow(obj);
-            	shows.add(show);
-        	}
-    	}
-    	mongoClient.close();
-    	
-    	return shows;
+		return shows;
 	}
 
 	@Override
 	public ArrayList<Show> getAll() {
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-    	MongoDatabase database = mongoClient.getDatabase("local");
-    	MongoCollection<Document> collection = database.getCollection("testeighty");
-    	
-    	FindIterable<Document> docs = collection.find();
-    	mongoClient.close();
-    	
     	ArrayList<Show> allShows = new ArrayList<>();
-		for (Document doc : docs) {
-			JSONObject obj = new JSONObject(doc.toJson());
-			System.out.println("Retrieved " + obj.getString("title") + "...");
-			Show show = jsonToShow(obj);
-			allShows.add(show);
+
+		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+	    	MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+	    	MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+	    	
+	    	FindIterable<Document> docs = collection.find();
+    	
+			for (Document doc : docs) {
+				JSONObject obj = new JSONObject(doc.toJson());
+				System.out.println("Retrieved " + obj.getString("title") + "...");
+				Show show = jsonToShow(obj);
+				allShows.add(show);
+			}
 		}
 		
 		return allShows;
@@ -73,17 +83,17 @@ public class ShowDao implements Dao<Show> {
 	}
 	
 	public void saveShows(ArrayList<Show> shows) {
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-    	MongoDatabase database = mongoClient.getDatabase("local");
-    	MongoCollection<Document> collection = database.getCollection("testeighty");
 		
-    	Document[] docs = showsToDocs(shows);
-    		
-    	for(Document doc : docs) {		
-	    	collection.insertOne(doc);
-    	}
-    	
-    	mongoClient.close();
+		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+	    	MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+	    	MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+			
+	    	Document[] docs = showsToDocs(shows);
+	    		
+	    	for(Document doc : docs) {		
+		    	collection.insertOne(doc);
+	    	}
+		}
 	}
 
 	@Override
@@ -93,19 +103,19 @@ public class ShowDao implements Dao<Show> {
 	}
 	
 	public void updateShows(ArrayList<Show> shows) {
-		MongoClient mongoClient = new MongoClient("localhost", 27017);
-    	MongoDatabase database = mongoClient.getDatabase("local");
-    	MongoCollection<Document> collection = database.getCollection("testeighty");
-    	
-    	for(Show show : shows) {		
-    		Document doc = show.toDocument();
-	    	UpdateResult result = collection.replaceOne(Filters.eq("slug", show.getIdSlug()), doc);
-	    	if (result.getModifiedCount() == 1) {
-	    		System.out.println("Mongo updated: " + show.getTitle());
+		
+		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+	    	MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+	    	MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+	    	
+	    	for(Show show : shows) {		
+	    		Document doc = show.toDocument();
+		    	UpdateResult result = collection.replaceOne(Filters.eq("slug", show.getIdSlug()), doc);
+		    	if (result.getModifiedCount() == 1) {
+		    		System.out.println("Mongo updated: " + show.getTitle());
+		    	}
 	    	}
-    	}
-    	
-    	mongoClient.close();		
+		}
 	}
 
 	@Override
@@ -119,7 +129,7 @@ public class ShowDao implements Dao<Show> {
 		show.setCurrentSeason(obj.getInt("currentSeason"));
 		show.setIdSlug(obj.getString("slug"));
 		show.setIdTrakt(obj.getInt("idTrakt"));
-		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");//"MMM dd, yyyy HH:mm");
+		DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
 		if (!obj.getString("latestEpisodeDate").isEmpty()) {
 			show.setLatestEpDate(LocalDateTime.parse(obj.getString("latestEpisodeDate"), dateFormatter));
 		}
@@ -139,7 +149,7 @@ public class ShowDao implements Dao<Show> {
 		if (obj.getString("traktUpdatedOn").length() != 19 ) {
 			datePattern = "yyyy-MM-dd'T'HH:mm";
 		}
-		DateTimeFormatter dateFormatterSeconds = DateTimeFormatter.ofPattern(datePattern);//"MMM dd, yyyy HH:mm");
+		DateTimeFormatter dateFormatterSeconds = DateTimeFormatter.ofPattern(datePattern);
 		show.setUpdatedAtTrakt(LocalDateTime.parse(obj.getString("traktUpdatedOn"), dateFormatterSeconds));
 		show.setYearBegin(obj.getInt("yearBegin"));
 		show.setYearLatest(obj.getInt("yearLatest"));

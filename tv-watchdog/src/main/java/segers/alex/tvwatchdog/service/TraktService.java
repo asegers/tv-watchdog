@@ -9,15 +9,34 @@ import java.util.concurrent.TimeUnit;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.stereotype.Service;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import segers.alex.tvwatchdog.beans.Show;
 import segers.alex.tvwatchdog.dao.ShowDao;
 
+@Service
 public class TraktService {
 	
 	ShowDao daoShow;
+
+	private static final String TRAKT_API_URL = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/";
+	private static final String HEADER_TRAKT_API_KEY_KEY = "trakt-api-key";
+	private static final String HEADER_TRAKT_API_KEY_VALUE = "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0";
+	private static final String HEADER_CONTENT_TYPE_KEY = "Content-Type";
+	private static final String HEADER_CONTENT_TYPE_VALUE = "application/json";
+	private static final String HEADER_TRAKT_API_VERSION_KEY = "trakt-api-version";
+	private static final String HEADER_TRAKT_API_VERSION_VALUE = "2";
+	
+	private static final String INCOMING_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+	
+	private static final String MSG_RETRYING = "429 Response. Retrying...";
+	
+	private static final String RESPONSE_EPISODE_DATE_FIELD = "first_aired";
+	private static final String RESPONSE_EPISODE_OR_SEASON_NUMBER_FIELD = "number";
+	private static final String RESPONSE_SHOW_TITLE_FIELD = "title";
+	private static final String RESPONSE_SHOW_TRAKT_STATUS_FIELD = "status";
 
 	public ArrayList<JSONObject> getShowsDataFromTrakt(ArrayList<String> showSlugs) throws JSONException {
 		// this is the logic for downloading all possible info for a show upon first Search query to Trakt (via API)
@@ -43,21 +62,21 @@ public class TraktService {
 	
 
 	private Show getLastEpisode(Show show) {
-		String lastEpisodeUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/"
+		String lastEpisodeUrl = TRAKT_API_URL
 		    	+ show.getIdSlug() +
 		    	"/last_episode?extended=full";
 	    	Response lastEpisodeData = RestAssured.given()
-	    			.header("Content-Type", "application/json")
-	    			.header("trakt-api-version", "2")
-	    			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+	    			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+	    			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+	    			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
 	    			.when().get(lastEpisodeUrl);
 	    	
 	    	LocalDateTime lastEpisode = null;
 	    	int lastEpisodeSeason = -1;
 	    	int lastEpisodeYear = -1;
 	    	if (lastEpisodeData.statusCode() == 200) {
-		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		    	lastEpisode = LocalDateTime.parse(lastEpisodeData.jsonPath().getString("first_aired"), formatter);
+		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
+		    	lastEpisode = LocalDateTime.parse(lastEpisodeData.jsonPath().getString(RESPONSE_EPISODE_DATE_FIELD), formatter);
 		    	lastEpisodeSeason = lastEpisodeData.jsonPath().getInt("season");
 		    	lastEpisodeYear = Integer.parseInt(lastEpisode.toString().substring(0, 4));
 	    	}
@@ -66,10 +85,10 @@ public class TraktService {
 	    		try {
 					TimeUnit.SECONDS.sleep(10);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				    Thread.currentThread().interrupt();
 					e.printStackTrace();
 				}
-	    		System.out.println("429 Response. Retrying...");
+	    		System.out.println(MSG_RETRYING);
 	    		show = getLastEpisode(show);
 	    	}
 
@@ -81,7 +100,6 @@ public class TraktService {
 	}
 
 	private Show populateShowFromSlug(String slug) throws JSONException {
-		// need to clean this up.. prob not supposed to be show = method(show);
 		Show show = getSingleShow(slug);
 		show = getNextEpisode(show);
 		show = getLastEpisode(show);
@@ -92,7 +110,6 @@ public class TraktService {
 	}
 	
 	public Show populateShow(Show show) throws JSONException {
-		// need to clean this up.. prob not supposed to be show = method(show);
 		show.setStatus("");
 		show = getNextEpisode(show);
 		show = getLastEpisode(show);
@@ -103,13 +120,13 @@ public class TraktService {
 	}
 
 	public int getLatestSeasonNumber(Show show) throws JSONException {
-		String seasonsUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/"
+		String seasonsUrl = TRAKT_API_URL
 		    	+ show.getIdSlug() +
 		    	"/seasons";
 	    	Response seasonsData = RestAssured.given()
-	    			.header("Content-Type", "application/json")
-	    			.header("trakt-api-version", "2")
-	    			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+	    			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+	    			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+	    			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
 	    			.when().get(seasonsUrl);
 	    	
 	    	int currentSeason = -1;
@@ -119,7 +136,7 @@ public class TraktService {
 	    		
 	    		int maxSeason = 0;
 	    		for (int i = 0; i < arrayJson.length() ; i++) {
-	    			int objSeasonNumber = arrayJson.getJSONObject(i).getInt("number");
+	    			int objSeasonNumber = arrayJson.getJSONObject(i).getInt(RESPONSE_EPISODE_OR_SEASON_NUMBER_FIELD);
 	    			if (objSeasonNumber > maxSeason) maxSeason = objSeasonNumber;
 	    		}
 	    		currentSeason = maxSeason;
@@ -129,32 +146,32 @@ public class TraktService {
 	}
 
 	private Show getNextEpisode(Show show) {
-		String nextEpisodeUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/"
+		String nextEpisodeUrl = TRAKT_API_URL
 		    	+ show.getIdSlug() +
 		    	"/next_episode?extended=full";
 	    	Response nextEpisodeData = RestAssured.given()
-	    			.header("Content-Type", "application/json")
-	    			.header("trakt-api-version", "2")
-	    			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+	    			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+	    			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+	    			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
 	    			.when().get(nextEpisodeUrl);
 	    	
 	    	LocalDateTime nextEpisode = null;
 	    	int nextEpisodeNumber = -1;
 	    	if (nextEpisodeData.statusCode() == 200) {
 	    	
-		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		    	nextEpisode = LocalDateTime.parse(nextEpisodeData.jsonPath().getString("first_aired"), formatter);
-		    	nextEpisodeNumber = nextEpisodeData.jsonPath().getInt("number");
+		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
+		    	nextEpisode = LocalDateTime.parse(nextEpisodeData.jsonPath().getString(RESPONSE_EPISODE_DATE_FIELD), formatter);
+		    	nextEpisodeNumber = nextEpisodeData.jsonPath().getInt(RESPONSE_EPISODE_OR_SEASON_NUMBER_FIELD);
 	    	}
 	    	else if (nextEpisodeData.statusCode() == 429) {
 	    		// if Rate Limit exceeded, then wait a few seconds and try again...
 	    		try {
 					TimeUnit.SECONDS.sleep(10);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				    Thread.currentThread().interrupt();
 					e.printStackTrace();
 				}
-	    		System.out.println("429 Response. Retrying...");
+	    		System.out.println(MSG_RETRYING);
 	    		show = getNextEpisode(show);
 	    	}
 
@@ -165,24 +182,24 @@ public class TraktService {
 	}
 
 	public Show getSingleShow(String slug) {
-		String showUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/"
+		String showUrl = TRAKT_API_URL
     		+slug+
     		"?extended=full";
     	Response showData = RestAssured.given()
-    			.header("Content-Type", "application/json")
-    			.header("trakt-api-version", "2")
-    			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+    			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+    			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+    			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
     			.when().get(showUrl);
     
     	Show show = new Show();
     
     	if (showData.statusCode() == 200) {
-	    	show.setTitle(showData.jsonPath().getString("title"));
+	    	show.setTitle(showData.jsonPath().getString(RESPONSE_SHOW_TITLE_FIELD));
 	    	show.setYearBegin(showData.jsonPath().getInt("year"));
 	    	show.setIdTrakt(showData.jsonPath().getInt("ids.trakt"));
 	    	show.setIdSlug(showData.jsonPath().getString("ids.slug"));
-	    	show.setStatusTrakt(showData.jsonPath().getString("status"));
-	    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	    	show.setStatusTrakt(showData.jsonPath().getString(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
+	    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
 	    	show.setUpdatedAtTrakt(LocalDateTime.parse(showData.jsonPath().getString("updated_at"), formatter));
 	    	show.setStatus("");
     	}
@@ -191,10 +208,10 @@ public class TraktService {
     		try {
 				TimeUnit.SECONDS.sleep(10);
 			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
+			    Thread.currentThread().interrupt();
 				e.printStackTrace();
 			}
-    		System.out.println("429 Response. Retrying...");
+    		System.out.println(MSG_RETRYING);
     		show = getSingleShow(slug);
     	}
     	
@@ -207,9 +224,9 @@ public class TraktService {
     	String popularShowsUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/popular"
         		+ "?extended=full" + "&limit=200";
         	Response popularShowsData = RestAssured.given()
-        			.header("Content-Type", "application/json")
-        			.header("trakt-api-version", "2")
-        			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+        			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+        			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+        			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
         			.when().get(popularShowsUrl);
 		
         	// for each show returned...
@@ -220,18 +237,18 @@ public class TraktService {
         	for (int i = 0; i < array.size(); i++) {
         		Object objShow = array.get(i);
             	HashMap hashJson = (HashMap) objShow;
-            	String status = (String) hashJson.get("status");
+            	String status = (String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD);
             	if(status.equals("ended") || status.equals("canceled")) {
-	            	System.out.println(hashJson.get("title"));
+	            	System.out.println(hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
 	            	
 	            	Show show = new Show();
-	            	show.setTitle((String) hashJson.get("title"));
+	            	show.setTitle((String) hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
 	            	show.setYearBegin((int) hashJson.get("year"));
 	            	HashMap hashIds = (HashMap) hashJson.get("ids");
 	            	show.setIdTrakt((int) hashIds.get("trakt"));
 	            	show.setIdSlug((String) hashIds.get("slug"));
-	            	show.setStatusTrakt((String) hashJson.get("status"));
-	            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+	            	show.setStatusTrakt((String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
+	            	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
 	            	show.setUpdatedAtTrakt(LocalDateTime.parse((String) hashJson.get("updated_at"), formatter));
 	            	
 	            	show = populateShow(show);
@@ -252,9 +269,9 @@ public class TraktService {
     	JSONObject showJson = null;
 
 		showJson = new JSONObject()
-                .put("title", show.getTitle())
+                .put(RESPONSE_SHOW_TITLE_FIELD, show.getTitle())
                 .put("slug", show.getIdSlug())
-                .put("status", show.getStatus())
+                .put(RESPONSE_SHOW_TRAKT_STATUS_FIELD, show.getStatus())
                 .put("yearBegin", show.getYearBegin())
                 .put("yearLatest", show.getYearLatest())
                 .put("currentSeason", show.getCurrentSeason());
@@ -291,33 +308,33 @@ public class TraktService {
 	}
 	
     public Show getNextEpisodeProper(String slugId) {
-		String nextEpisodeUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/"
+		String nextEpisodeUrl = TRAKT_API_URL
 		    	+ slugId +
 		    	"/next_episode?extended=full";
 	    	Response nextEpisodeData = RestAssured.given()
-	    			.header("Content-Type", "application/json")
-	    			.header("trakt-api-version", "2")
-	    			.header("trakt-api-key", "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0")
+	    			.header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
+	    			.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
+	    			.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE)
 	    			.when().get(nextEpisodeUrl);
 	    	
 	    	LocalDateTime nextEpisode = null;
 	    	int nextEpisodeNumber = -1;
 	    	if (nextEpisodeData.statusCode() == 200) {
 	    	
-		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-		    	nextEpisode = LocalDateTime.parse(nextEpisodeData.jsonPath().getString("first_aired"), formatter);
-		    	nextEpisodeNumber = nextEpisodeData.jsonPath().getInt("number");
+		    	DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
+		    	nextEpisode = LocalDateTime.parse(nextEpisodeData.jsonPath().getString(RESPONSE_EPISODE_DATE_FIELD), formatter);
+		    	nextEpisodeNumber = nextEpisodeData.jsonPath().getInt(RESPONSE_EPISODE_OR_SEASON_NUMBER_FIELD);
 	    	}
 	    	else if (nextEpisodeData.statusCode() == 429) {
 	    		// if Rate Limit exceeded, then wait a few seconds and try again...
 	    		try {
 					TimeUnit.SECONDS.sleep(10);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
+				    Thread.currentThread().interrupt();
 					e.printStackTrace();
 				}
-	    		System.out.println("429 Response. Retrying...");
-	    		Show show = getNextEpisodeProper(slugId); // why did I assign to a show? is this the cause of an issue?
+	    		System.out.println(MSG_RETRYING);
+	    		getNextEpisodeProper(slugId); // had previously assigned to a show? is this the cause of an issue regarding daily update?
 	    	}
 	    	
 

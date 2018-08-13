@@ -3,19 +3,36 @@ package segers.alex.tvwatchdog.service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import segers.alex.tvwatchdog.beans.Show;
 import segers.alex.tvwatchdog.dao.ShowDao;
+import segers.alex.tvwatchdog.util.TvWatchdogUtil;
 
+@Service
 public class UpdateCheckService {
 
-	public TraktService traktSvc = new TraktService();
-	public ShowDao daoShow = new ShowDao();
+	@Autowired
+	TraktService traktSvc;
 	
-	private ArrayList<Show> showsToCallSeasonsApi; // = new ArrayList<>();
-	private ArrayList<Show> showsToCallNextEpApi; // = new ArrayList<>();
-	private ArrayList<Show> showsToCallGetShowApi; // = new ArrayList<>();
+	@Autowired
+	ShowDao daoShow;
 	
-	private ArrayList<Show> mongoUpdateShows; // = new ArrayList<>();
+	private static final String NEW_SEASON_ANNOUNCED = "newSeasonAnnounced";
+	private static final String NEW_SEASON_HAS_PREMIERE_DATE = "newSeasonHasPremiereDate";
+	private static final String SEASON_CURRENTLY_AIRING = "seasonCurrentlyAiring";
+	private static final String SEASON_ENDED = "seasonEnded";
+	private static final String SERIES_ENDED = "seriesEnded";
+	
+	private static final String ARROW_SYMBOL = " --> ";
+
+	
+	private ArrayList<Show> showsToCallSeasonsApi;
+	private ArrayList<Show> showsToCallNextEpApi;
+	private ArrayList<Show> showsToCallGetShowApi;
+	
+	private ArrayList<Show> mongoUpdateShows;
 
 
 	public void dailyDatabaseUpdates() {
@@ -37,11 +54,11 @@ public class UpdateCheckService {
 		for (Show show : shows) {
 			String status = show.getStatus();
 			switch(status) {
-			case "seasonEnded":
+			case SEASON_ENDED:
 				showsToCallSeasonsApi.add(show);
 				break;
 				
-			case "seriesEnded":
+			case SERIES_ENDED:
 				showsToCallGetShowApi.add(show);
 				break;
 				
@@ -61,8 +78,8 @@ public class UpdateCheckService {
     		int currentSeason = traktSvc.getLatestSeasonNumber(show);
     		int latestEpisodeSeason = show.getLatestEpsSeasonNumber();
     		if (currentSeason > latestEpisodeSeason) {
-    			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + show.getStatus() + " --> " + "newSeasonAnnounced");
-    			show.setStatus("newSeasonAnnounced");
+    			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + show.getStatus() + ARROW_SYMBOL + NEW_SEASON_ANNOUNCED);
+    			show.setStatus(NEW_SEASON_ANNOUNCED);
     			showsToCallNextEpApi.add(show);
     			System.out.println("Update: New Season Announced (temp) - " + show.getTitle());
     		}
@@ -83,30 +100,29 @@ public class UpdateCheckService {
 				// case else
 					// update to seasonEnded, add to apiGetShowCall
     	for (Show show : showsToCallNextEpApi) {
-    		Show showUpdated = new Show();
-    		showUpdated = traktSvc.getNextEpisodeProper(show.getIdSlug());
+    		Show showUpdated = traktSvc.getNextEpisodeProper(show.getIdSlug());
     		if (null != showUpdated.getNextEpDate()) {
     			switch(show.getStatus()) {
     			
-    			case "newSeasonAnnounced":
-    				show.setStatus("newSeasonHasPremiereDate");
+    			case NEW_SEASON_ANNOUNCED:
+    				show.setStatus(NEW_SEASON_HAS_PREMIERE_DATE);
     				show.setNextEpDate(showUpdated.getNextEpDate());
     				show.setNextEpNumber(showUpdated.getNextEpNumber());
-	    			System.out.println("Updated: " + show.getTitle() + ";\t\t status changed: " + "newSeasonAnnounced" + " --> " + "newSeasonHasPremiereDate");
-	    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode date changed: " + "null" + " --> " + showUpdated.getNextEpDate().toString());
-	    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode # changed: " + "null" + " --> " + showUpdated.getNextEpNumber());
+	    			System.out.println("Updated: " + show.getTitle() + ";\t\t status changed: " + NEW_SEASON_ANNOUNCED + ARROW_SYMBOL + NEW_SEASON_HAS_PREMIERE_DATE);
+	    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode date changed: " + "null" + ARROW_SYMBOL + showUpdated.getNextEpDate().toString());
+	    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode # changed: " + "null" + ARROW_SYMBOL + showUpdated.getNextEpNumber());
 
     				mongoUpdateShows.add(show);
     				break;
     				
-				case "newSeasonHasPremiereDate":
-				case "seasonCurrentlyAiring":
+				case NEW_SEASON_HAS_PREMIERE_DATE:
+				case SEASON_CURRENTLY_AIRING:
 				    LocalDateTime dbNextEpDate = show.getNextEpDate();
 				    LocalDateTime currentNextEpDate = showUpdated.getNextEpDate();
 				    boolean updatedFlag = false;
 				    if (!currentNextEpDate.isEqual(dbNextEpDate)) {	//need to check for null?
 				    	show.setNextEpDate(currentNextEpDate);
-		    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode date changed: " + dbNextEpDate.toString() + " --> " + currentNextEpDate.toString());
+		    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode date changed: " + dbNextEpDate.toString() + ARROW_SYMBOL + currentNextEpDate.toString());
 				    	updatedFlag = true;
 				    }
 				    
@@ -114,7 +130,7 @@ public class UpdateCheckService {
 				    int currentNextEpNum = showUpdated.getNextEpNumber();
 				    if (currentNextEpNum != dbNextEpNum) {
 				    	show.setNextEpNumber(currentNextEpNum);
-		    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode # changed: " + dbNextEpNum + " --> " + currentNextEpNum);
+		    			System.out.println("Updated: " + show.getTitle() + ";\t\t next episode # changed: " + dbNextEpNum + ARROW_SYMBOL + currentNextEpNum);
 				    	updatedFlag = true;
 				    }
 				    
@@ -123,14 +139,17 @@ public class UpdateCheckService {
 				    }
 				    // TO DO: ALSO NEED TO UPDATE LATEST EPISODE! Isn't always accurate when it's been >1 day since last update
 				    break;
+				    
+				default:
+					break;
     			}
     		}
     		else {	// Next Episode Date response is null/empty
-    			if (!show.getStatus().equals("newSeasonAnnounced")) {
+    			if (!show.getStatus().equals(NEW_SEASON_ANNOUNCED)) {
     				String previousStatus = show.getStatus();
-    				show.setStatus("seasonEnded");
+    				show.setStatus(SEASON_ENDED);
     				showsToCallGetShowApi.add(show);
-        			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + previousStatus + " --> " + "seasonEnded");
+        			System.out.println("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + previousStatus + ARROW_SYMBOL + SEASON_ENDED);
     			}
     		}
     		// can't update traktUpdatedOn bc don't get the date from Api call...
@@ -144,7 +163,6 @@ public class UpdateCheckService {
 			// case traktStatus = returning, else
 				// check matches, if not then update
 		for (Show show : showsToCallGetShowApi) {
-//			if(!show.getTitle().equals("12 Monkeys")){
 			Show showUpdate = traktSvc.getSingleShow(show.getIdSlug());
 			
 			String currentTraktStatus = showUpdate.getStatusTrakt();
@@ -153,32 +171,20 @@ public class UpdateCheckService {
 			boolean updatedFlag = false;
 			if (!currentTraktStatus.equals(prevTraktStatus)) {
 				show.setStatusTrakt(showUpdate.getStatusTrakt());
-				System.out.println("Updated: " + show.getTitle() + ";\t\t trakt status changed: " + prevTraktStatus + " --> " + currentTraktStatus);
+				System.out.println("Updated: " + show.getTitle() + ";\t\t trakt status changed: " + prevTraktStatus + ARROW_SYMBOL + currentTraktStatus);
 				updatedFlag = true;
 			}
 			String prevStatus = show.getStatus();
 			String currentStatus = show.determineAndSetMyStatus();
 			if (!currentStatus.equals(prevStatus)) {
 				updatedFlag = true;
-				System.out.println("Updated: " + show.getTitle() + ";\t\t status changed: " + prevStatus + " --> " + currentStatus);
+				System.out.println("Updated: " + show.getTitle() + ";\t\t status changed: " + prevStatus + ARROW_SYMBOL + currentStatus);
 			}
 			
 			if (updatedFlag) {
 				mongoUpdateShows.add(show);
 			}
-//		}
-	}		
+		}		
 	}
-
-
-
-
-
-	
-
-
-	
-	
-	
 	
 }
