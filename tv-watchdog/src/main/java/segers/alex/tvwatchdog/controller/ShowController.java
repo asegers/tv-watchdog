@@ -51,8 +51,8 @@ public class ShowController {
 		updateCheckSvc.dailyDatabaseUpdates();
 	}
 
-	@RequestMapping("/updateDatabaseWithTop200")
-	public void updateDatabaseWithTop200() {
+	@RequestMapping("/updateDatabaseWithTopShows")
+	public void updateDatabaseWithTraktTopShows() {
 		traktSvc.updateDatabaseWithTopShows();
 	}
 

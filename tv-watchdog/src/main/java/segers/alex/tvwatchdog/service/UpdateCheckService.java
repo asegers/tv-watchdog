@@ -36,6 +36,14 @@ public class UpdateCheckService {
 
 	final static Logger logger = LogManager.getLogger(UpdateCheckService.class);
 
+	public UpdateCheckService() {
+		this.showsToCallSeasonsApi = new ArrayList<Show>();
+		this.showsToCallNextEpApi = new ArrayList<Show>();
+		this.showsToCallGetShowApi = new ArrayList<Show>();
+
+		this.mongoUpdateShows = new ArrayList<Show>();
+	}
+
 	public void dailyDatabaseUpdates() {
 		// There may be a bug triggered when it's been more than x days (or show
 		// event has happened) since last update...
@@ -109,6 +117,7 @@ public class UpdateCheckService {
 		// update to seasonEnded, add to apiGetShowCall
 		for (Show show : showsToCallNextEpApi) {
 			Show showUpdated = traktSvc.getNextEpisodeProper(show.getIdSlug());
+			boolean updatedFlag = false;
 			if (null != showUpdated.getNextEpDate()) {
 				switch (show.getStatus()) {
 
@@ -123,14 +132,13 @@ public class UpdateCheckService {
 					logger.info("Updated: " + show.getTitle() + ";\t\t next episode # changed: " + "null" + ARROW_SYMBOL
 							+ showUpdated.getNextEpNumber());
 
-					mongoUpdateShows.add(show);
+					updatedFlag = true;
 					break;
 
 				case NEW_SEASON_HAS_PREMIERE_DATE:
 				case SEASON_CURRENTLY_AIRING:
 					LocalDateTime dbNextEpDate = show.getNextEpDate();
 					LocalDateTime currentNextEpDate = showUpdated.getNextEpDate();
-					boolean updatedFlag = false;
 					if (!currentNextEpDate.isEqual(dbNextEpDate)) { // need to
 																	// check for
 																	// null?
@@ -149,9 +157,11 @@ public class UpdateCheckService {
 						updatedFlag = true;
 					}
 
-					if (updatedFlag) {
-						mongoUpdateShows.add(show);
+					if (show.getStatus().equals(NEW_SEASON_HAS_PREMIERE_DATE) && currentNextEpNum != 1) {
+						show.determineAndSetMyStatus();
+						updatedFlag = true;
 					}
+
 					// TO DO: ALSO NEED TO UPDATE LATEST EPISODE! Isn't always
 					// accurate when it's been >1 day since last update
 					break;
@@ -162,11 +172,15 @@ public class UpdateCheckService {
 			} else { // Next Episode Date response is null/empty
 				if (!show.getStatus().equals(NEW_SEASON_ANNOUNCED)) {
 					String previousStatus = show.getStatus();
-					show.setStatus(SEASON_ENDED);
+					show.setNextEpDate(null);
+					show.setNextEpNumber(-1);
 					showsToCallGetShowApi.add(show);
 					logger.info("Updated: " + show.getTitle() + ";\t\t status (tent.) changed: " + previousStatus
 							+ ARROW_SYMBOL + SEASON_ENDED);
 				}
+			}
+			if (updatedFlag) {
+				mongoUpdateShows.add(show);
 			}
 			// can't update traktUpdatedOn bc don't get the date from Api
 			// call...

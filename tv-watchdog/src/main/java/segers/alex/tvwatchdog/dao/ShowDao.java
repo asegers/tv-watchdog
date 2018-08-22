@@ -107,15 +107,17 @@ public class ShowDao implements Dao<Show> {
 
 	public void updateShows(ArrayList<Show> shows) {
 
-		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
-			MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
-			MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
-
-			for (Show show : shows) {
-				Document doc = show.toDocument();
-				UpdateResult result = collection.replaceOne(Filters.eq("slug", show.getIdSlug()), doc);
-				if (result.getModifiedCount() == 1) {
-					logger.info("Mongo updated: " + show.getTitle());
+		if (null != shows) {
+			try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+				MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
+				MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
+	
+				for (Show show : shows) {
+					Document doc = show.toDocument();
+					UpdateResult result = collection.replaceOne(Filters.eq("slug", show.getIdSlug()), doc);
+					if (result.getModifiedCount() == 1) {
+						logger.info("Mongo updated: " + show.getTitle());
+					}
 				}
 			}
 		}

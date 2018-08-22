@@ -79,22 +79,6 @@ function buildDisplaySortedAlpha(shows) {
 	return out;
 }
 
-function sortShowsByTitle(shows){
-	shows.sort(function(a, b){
-    	// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
-    	aTitle = (a.title).toUpperCase(); 
-    	if(aTitle.startsWith("A ")) aTitle = aTitle.substr(2, aTitle.length - 1);
-    	if(aTitle.startsWith("THE ")) aTitle = aTitle.substr(4, aTitle.length - 1);
-    	
-    	bTitle = (b.title).toUpperCase();
-    	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
-    	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
-    	
-	  	return aTitle > bTitle;
-	});
-	return shows;
-}
-
 function buildDisplaySortedBest(shows) {
 	//neat sort: (currentlyAiring) "New Ep airs in...", (newSeasonHasDate) "New season premieres in...", [Ready for binging in...], 
 	// (seasonEnded, < 1.5yr since lastEp) "Ready to binge:", (seasonAnnounced) "News:", (seasonEnded, >1.5yr) "Awaiting updates", (seriesEnded) "Ended series:"
@@ -200,6 +184,22 @@ function buildDisplaySortedBest(shows) {
 	return out;
 }
 
+function sortShowsByTitle(shows){
+	shows.sort(function(a, b){
+    	// if title doesn't start with "A " or "The ", then go ahead, else, compare without first word.
+    	aTitle = (a.title).toUpperCase(); 
+    	if(aTitle.startsWith("A ")) aTitle = aTitle.substr(2, aTitle.length - 1);
+    	if(aTitle.startsWith("THE ")) aTitle = aTitle.substr(4, aTitle.length - 1);
+    	
+    	bTitle = (b.title).toUpperCase();
+    	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
+    	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
+    	
+	  	return aTitle > bTitle;
+	});
+	return shows;
+}
+
 function sortShowsByDateAsc(shows) {
 	shows.sort(function(a, b) {
 		aDate = new Date(a.nextEpisodeDate).getTime();
@@ -292,7 +292,7 @@ function addShowAndRefresh(element) {
 	if (stored) {
 		myShows = JSON.parse(stored);
 	} else {
-		myShows = new Array(); // change this to what exactly?
+		myShows = new Array();
 	}
 
 	myShows.push(slug);

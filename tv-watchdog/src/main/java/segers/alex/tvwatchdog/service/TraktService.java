@@ -25,7 +25,7 @@ public class TraktService {
 	@Autowired
 	ShowDao daoShow;
 
-	private static final String TRAKT_API_URL = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/";
+	private static final String TRAKT_API_URL = "https://api.trakt.tv/shows/"; // https://private-anon-266658202a-trakt.apiary-proxy.com/shows/";
 	private static final String HEADER_TRAKT_API_KEY_KEY = "trakt-api-key";
 	private static final String HEADER_TRAKT_API_KEY_VALUE = "a86f75ae6e256af79ca34cd35462228b1d25f02a6ce1552e83bf967a1dff0ff0";
 	private static final String HEADER_CONTENT_TYPE_KEY = "Content-Type";
@@ -212,8 +212,7 @@ public class TraktService {
 
 	public void updateDatabaseWithTopShows() {
 
-		String popularShowsUrl = "https://private-anon-266658202a-trakt.apiary-proxy.com/shows/popular"
-				+ "?extended=full" + "&limit=200";
+		String popularShowsUrl = "https://api.trakt.tv/shows/popular" + "?extended=full" + "&limit=200";
 		Response popularShowsData = RestAssured.given().header(HEADER_CONTENT_TYPE_KEY, HEADER_CONTENT_TYPE_VALUE)
 				.header(HEADER_TRAKT_API_VERSION_KEY, HEADER_TRAKT_API_VERSION_VALUE)
 				.header(HEADER_TRAKT_API_KEY_KEY, HEADER_TRAKT_API_KEY_VALUE).when().get(popularShowsUrl);
@@ -227,23 +226,23 @@ public class TraktService {
 			Object objShow = array.get(i);
 			HashMap hashJson = (HashMap) objShow;
 			String status = (String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD);
-			if (status.equals("ended") || status.equals("canceled")) {
-				logger.info(hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
+			// if (status.equals("ended") || status.equals("canceled")) {
+			logger.info(hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
 
-				Show show = new Show();
-				show.setTitle((String) hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
-				show.setYearBegin((int) hashJson.get("year"));
-				HashMap hashIds = (HashMap) hashJson.get("ids");
-				show.setIdTrakt((int) hashIds.get("trakt"));
-				show.setIdSlug((String) hashIds.get("slug"));
-				show.setStatusTrakt((String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
-				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
-				show.setUpdatedAtTrakt(LocalDateTime.parse((String) hashJson.get("updated_at"), formatter));
+			Show show = new Show();
+			show.setTitle((String) hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
+			show.setYearBegin((int) hashJson.get("year"));
+			HashMap hashIds = (HashMap) hashJson.get("ids");
+			show.setIdTrakt((int) hashIds.get("trakt"));
+			show.setIdSlug((String) hashIds.get("slug"));
+			show.setStatusTrakt((String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
+			show.setUpdatedAtTrakt(LocalDateTime.parse((String) hashJson.get("updated_at"), formatter));
 
-				show = populateShow(show);
+			show = populateShow(show);
 
-				showsToAddToMongo.add(show);
-			}
+			showsToAddToMongo.add(show);
+			// }
 		}
 		int count = 1;
 		for (Show show : showsToAddToMongo) {
