@@ -49,6 +49,7 @@ public class ShowController {
 	public void updateDatabaseViaTrakt() {
 		// To run daily, need to schedule somehow...
 		updateCheckSvc.dailyDatabaseUpdates();
+//		helper.generateTop200List();
 	}
 
 	@RequestMapping("/updateDatabaseWithTopShows")

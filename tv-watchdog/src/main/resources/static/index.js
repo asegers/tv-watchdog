@@ -440,17 +440,17 @@ function setAutoCompleteShowsList() {
 		"title" : "House of Cards",
 		"slug" : "house-of-cards"
 	}, {
-		"title" : "Suits",
-		"slug" : "suits"
-	}, {
 		"title" : "Supernatural",
 		"slug" : "supernatural"
 	}, {
-		"title" : "Modern Family",
-		"slug" : "modern-family"
+		"title" : "Suits",
+		"slug" : "suits"
 	}, {
 		"title" : "Stranger Things",
 		"slug" : "stranger-things"
+	}, {
+		"title" : "Modern Family",
+		"slug" : "modern-family"
 	}, {
 		"title" : "Orange Is the New Black",
 		"slug" : "orange-is-the-new-black"
@@ -458,11 +458,11 @@ function setAutoCompleteShowsList() {
 		"title" : "The Flash",
 		"slug" : "the-flash-2014"
 	}, {
-		"title" : "Doctor Who",
-		"slug" : "doctor-who-2005"
-	}, {
 		"title" : "Vikings",
 		"slug" : "vikings"
+	}, {
+		"title" : "Doctor Who",
+		"slug" : "doctor-who-2005"
 	}, {
 		"title" : "The Simpsons",
 		"slug" : "the-simpsons"
@@ -479,11 +479,14 @@ function setAutoCompleteShowsList() {
 		"title" : "Mr. Robot",
 		"slug" : "mr-robot"
 	}, {
-		"title" : "Family Guy",
-		"slug" : "family-guy"
+		"title" : "Prison Break",
+		"slug" : "prison-break"
 	}, {
 		"title" : "South Park",
 		"slug" : "south-park"
+	}, {
+		"title" : "Family Guy",
+		"slug" : "family-guy"
 	}, {
 		"title" : "Marvel's Daredevil",
 		"slug" : "marvel-s-daredevil"
@@ -512,29 +515,26 @@ function setAutoCompleteShowsList() {
 		"title" : "Rick and Morty",
 		"slug" : "rick-and-morty"
 	}, {
-		"title" : "Fargo",
-		"slug" : "fargo"
-	}, {
 		"title" : "Shameless",
 		"slug" : "shameless-2011"
+	}, {
+		"title" : "Fargo",
+		"slug" : "fargo"
 	}, {
 		"title" : "Better Call Saul",
 		"slug" : "better-call-saul"
 	}, {
-		"title" : "Arrested Development",
-		"slug" : "arrested-development"
-	}, {
 		"title" : "Brooklyn Nine-Nine",
 		"slug" : "brooklyn-nine-nine"
+	}, {
+		"title" : "Arrested Development",
+		"slug" : "arrested-development"
 	}, {
 		"title" : "Silicon Valley",
 		"slug" : "silicon-valley"
 	}, {
 		"title" : "Marvel's Jessica Jones",
 		"slug" : "marvel-s-jessica-jones"
-	}, {
-		"title" : "The X-Files",
-		"slug" : "the-x-files"
 	}, {
 		"title" : "Archer",
 		"slug" : "archer"
@@ -545,11 +545,11 @@ function setAutoCompleteShowsList() {
 		"title" : "Top Gear",
 		"slug" : "top-gear"
 	}, {
-		"title" : "Criminal Minds",
-		"slug" : "criminal-minds"
-	}, {
 		"title" : "How to Get Away with Murder",
 		"slug" : "how-to-get-away-with-murder"
+	}, {
+		"title" : "Criminal Minds",
+		"slug" : "criminal-minds"
 	}, {
 		"title" : "It's Always Sunny in Philadelphia",
 		"slug" : "it-s-always-sunny-in-philadelphia"
@@ -557,11 +557,11 @@ function setAutoCompleteShowsList() {
 		"title" : "NCIS",
 		"slug" : "ncis"
 	}, {
-		"title" : "Lucifer",
-		"slug" : "lucifer"
-	}, {
 		"title" : "13 Reasons Why",
 		"slug" : "13-reasons-why"
+	}, {
+		"title" : "Lucifer",
+		"slug" : "lucifer"
 	}, {
 		"title" : "American Dad!",
 		"slug" : "american-dad"
@@ -569,56 +569,47 @@ function setAutoCompleteShowsList() {
 		"title" : "Attack on Titan",
 		"slug" : "attack-on-titan"
 	}, {
-		"title" : "Luther",
-		"slug" : "luther"
-	}, {
 		"title" : "Fear the Walking Dead",
 		"slug" : "fear-the-walking-dead"
 	}, {
-		"title" : "The Originals",
-		"slug" : "the-originals"
+		"title" : "Luther",
+		"slug" : "luther"
 	}, {
 		"title" : "Supergirl",
 		"slug" : "supergirl"
 	}, {
-		"title" : "Twin Peaks",
-		"slug" : "twin-peaks"
+		"title" : "Marvel's Luke Cage",
+		"slug" : "marvel-s-luke-cage"
 	}, {
 		"title" : "MythBusters",
 		"slug" : "mythbusters"
 	}, {
-		"title" : "Marvel's Luke Cage",
-		"slug" : "marvel-s-luke-cage"
+		"title" : "The Expanse",
+		"slug" : "the-expanse"
 	}, {
 		"title" : "Blindspot",
 		"slug" : "blindspot"
 	}, {
-		"title" : "The Last Ship",
-		"slug" : "the-last-ship"
-	}, {
 		"title" : "Bob's Burgers",
 		"slug" : "bob-s-burgers"
 	}, {
-		"title" : "Ray Donovan",
-		"slug" : "ray-donovan"
+		"title" : "The Last Ship",
+		"slug" : "the-last-ship"
 	}, {
 		"title" : "Adventure Time",
 		"slug" : "adventure-time"
 	}, {
-		"title" : "The Expanse",
-		"slug" : "the-expanse"
+		"title" : "Ray Donovan",
+		"slug" : "ray-donovan"
 	}, {
 		"title" : "DC's Legends of Tomorrow",
 		"slug" : "dc-s-legends-of-tomorrow"
 	}, {
-		"title" : "Cosmos: A Spacetime Odyssey",
-		"slug" : "cosmos-a-spacetime-odyssey"
+		"title" : "Peaky Blinders",
+		"slug" : "peaky-blinders"
 	}, {
 		"title" : "Hawaii Five-0",
 		"slug" : "hawaii-five-0"
-	}, {
-		"title" : "Peaky Blinders",
-		"slug" : "peaky-blinders"
 	}, {
 		"title" : "Last Week Tonight with John Oliver",
 		"slug" : "last-week-tonight-with-john-oliver"
@@ -626,41 +617,38 @@ function setAutoCompleteShowsList() {
 		"title" : "iZombie",
 		"slug" : "izombie"
 	}, {
-		"title" : "Outlander",
-		"slug" : "outlander"
-	}, {
 		"title" : "Marvel's Iron Fist",
 		"slug" : "marvel-s-iron-fist"
+	}, {
+		"title" : "Outlander",
+		"slug" : "outlander"
 	}, {
 		"title" : "Legion",
 		"slug" : "legion"
 	}, {
+		"title" : "Altered Carbon",
+		"slug" : "altered-carbon"
+	}, {
 		"title" : "The Daily Show",
 		"slug" : "the-daily-show"
+	}, {
+		"title" : "The Handmaid's Tale",
+		"slug" : "the-handmaid-s-tale"
 	}, {
 		"title" : "One Piece",
 		"slug" : "one-piece"
 	}, {
-		"title" : "Altered Carbon",
-		"slug" : "altered-carbon"
+		"title" : "Marvel's The Punisher",
+		"slug" : "marvel-s-the-punisher"
 	}, {
 		"title" : "The Man in the High Castle",
 		"slug" : "the-man-in-the-high-castle"
 	}, {
-		"title" : "Veep",
-		"slug" : "veep"
-	}, {
-		"title" : "Marvel's The Punisher",
-		"slug" : "marvel-s-the-punisher"
-	}, {
 		"title" : "Preacher",
 		"slug" : "preacher"
 	}, {
-		"title" : "NCIS: Los Angeles",
-		"slug" : "ncis-los-angeles"
-	}, {
-		"title" : "The Handmaid's Tale",
-		"slug" : "the-handmaid-s-tale"
+		"title" : "Veep",
+		"slug" : "veep"
 	}, {
 		"title" : "American Gods",
 		"slug" : "american-gods"
@@ -668,26 +656,26 @@ function setAutoCompleteShowsList() {
 		"title" : "BoJack Horseman",
 		"slug" : "bojack-horseman"
 	}, {
-		"title" : "The OA",
-		"slug" : "the-oa"
+		"title" : "NCIS: Los Angeles",
+		"slug" : "ncis-los-angeles"
 	}, {
 		"title" : "One-Punch Man",
 		"slug" : "one-punch-man"
 	}, {
+		"title" : "The OA",
+		"slug" : "the-oa"
+	}, {
 		"title" : "Curb Your Enthusiasm",
 		"slug" : "curb-your-enthusiasm"
-	}, {
-		"title" : "Chicago Fire",
-		"slug" : "chicago-fire"
-	}, {
-		"title" : "Quantico",
-		"slug" : "quantico"
 	}, {
 		"title" : "Unbreakable Kimmy Schmidt",
 		"slug" : "unbreakable-kimmy-schmidt"
 	}, {
-		"title" : "12 Monkeys",
-		"slug" : "12-monkeys"
+		"title" : "Chicago Fire",
+		"slug" : "chicago-fire"
+	}, {
+		"title" : "Mindhunter",
+		"slug" : "mindhunter"
 	}, {
 		"title" : "Taboo",
 		"slug" : "taboo-2017"
@@ -695,14 +683,11 @@ function setAutoCompleteShowsList() {
 		"title" : "Sword Art Online",
 		"slug" : "sword-art-online"
 	}, {
-		"title" : "Mindhunter",
-		"slug" : "mindhunter"
+		"title" : "Star Trek: Discovery",
+		"slug" : "star-trek-discovery"
 	}, {
 		"title" : "The Magicians",
 		"slug" : "the-magicians-2015"
-	}, {
-		"title" : "Star Trek: Discovery",
-		"slug" : "star-trek-discovery"
 	}, {
 		"title" : "Billions",
 		"slug" : "billions"
@@ -710,32 +695,41 @@ function setAutoCompleteShowsList() {
 		"title" : "This Is Us",
 		"slug" : "this-is-us"
 	}, {
-		"title" : "The Night Manager",
-		"slug" : "the-night-manager"
-	}, {
-		"title" : "Humans",
-		"slug" : "humans"
-	}, {
-		"title" : "Master of None",
-		"slug" : "master-of-none"
-	}, {
-		"title" : "Law & Order: Special Victims Unit",
-		"slug" : "law-order-special-victims-unit"
+		"title" : "Star Wars: The Clone Wars",
+		"slug" : "star-wars-the-clone-wars"
 	}, {
 		"title" : "Big Little Lies",
 		"slug" : "big-little-lies"
 	}, {
-		"title" : "Riverdale",
-		"slug" : "riverdale"
-	}, {
 		"title" : "DARK",
 		"slug" : "dark"
 	}, {
-		"title" : "American Crime Story",
-		"slug" : "american-crime-story"
+		"title" : "Master of None",
+		"slug" : "master-of-none"
+	}, {
+		"title" : "Humans",
+		"slug" : "humans"
+	}, {
+		"title" : "The Night Manager",
+		"slug" : "the-night-manager"
+	}, {
+		"title" : "Riverdale",
+		"slug" : "riverdale"
 	}, {
 		"title" : "The End of the F***ing World",
 		"slug" : "the-end-of-the-f-ing-world"
+	}, {
+		"title" : "Law & Order: Special Victims Unit",
+		"slug" : "law-order-special-victims-unit"
+	}, {
+		"title" : "Making a Murderer",
+		"slug" : "making-a-murderer"
+	}, {
+		"title" : "Money Heist",
+		"slug" : "money-heist"
+	}, {
+		"title" : "American Crime Story",
+		"slug" : "american-crime-story"
 	}, {
 		"title" : "The Good Place",
 		"slug" : "the-good-place"
@@ -743,104 +737,101 @@ function setAutoCompleteShowsList() {
 		"title" : "The Crown",
 		"slug" : "the-crown"
 	}, {
-		"title" : "The Grand Tour",
-		"slug" : "the-grand-tour"
-	}, {
-		"title" : "Strike Back",
-		"slug" : "strike-back"
+		"title" : "Ozark",
+		"slug" : "ozark"
 	}, {
 		"title" : "A Series of Unfortunate Events",
 		"slug" : "a-series-of-unfortunate-events"
 	}, {
-		"title" : "Z Nation",
-		"slug" : "z-nation"
-	}, {
-		"title" : "Ozark",
-		"slug" : "ozark"
+		"title" : "The Grand Tour",
+		"slug" : "the-grand-tour"
 	}, {
 		"title" : "Shadowhunters",
 		"slug" : "shadowhunters"
 	}, {
-		"title" : "Empire",
-		"slug" : "empire-2015"
+		"title" : "Strike Back",
+		"slug" : "strike-back"
 	}, {
-		"title" : "Money Heist",
-		"slug" : "money-heist"
-	}, {
-		"title" : "Chicago P.D.",
-		"slug" : "chicago-p-d"
-	}, {
-		"title" : "Into the Badlands",
-		"slug" : "into-the-badlands"
+		"title" : "Z Nation",
+		"slug" : "z-nation"
 	}, {
 		"title" : "Power",
 		"slug" : "power"
 	}, {
-		"title" : "Blue Bloods",
-		"slug" : "blue-bloods"
+		"title" : "Into the Badlands",
+		"slug" : "into-the-badlands"
+	}, {
+		"title" : "Empire",
+		"slug" : "empire-2015"
+	}, {
+		"title" : "Chicago P.D.",
+		"slug" : "chicago-p-d"
 	}, {
 		"title" : "Lethal Weapon",
 		"slug" : "lethal-weapon"
 	}, {
+		"title" : "Blue Bloods",
+		"slug" : "blue-bloods"
+	}, {
 		"title" : "Jane the Virgin",
 		"slug" : "jane-the-virgin"
 	}, {
-		"title" : "Colony",
-		"slug" : "colony"
+		"title" : "Timeless",
+		"slug" : "timeless-2016"
 	}, {
 		"title" : "Saturday Night Live",
 		"slug" : "saturday-night-live"
 	}, {
-		"title" : "Mom",
-		"slug" : "mom"
+		"title" : "Santa Clarita Diet",
+		"slug" : "santa-clarita-diet"
 	}, {
 		"title" : "Ballers",
 		"slug" : "ballers"
 	}, {
+		"title" : "Mom",
+		"slug" : "mom"
+	}, {
 		"title" : "Red Dwarf",
 		"slug" : "red-dwarf"
-	}, {
-		"title" : "You're the Worst",
-		"slug" : "you-re-the-worst"
-	}, {
-		"title" : "Santa Clarita Diet",
-		"slug" : "santa-clarita-diet"
 	}, {
 		"title" : "The Orville",
 		"slug" : "the-orville"
 	}, {
+		"title" : "You're the Worst",
+		"slug" : "you-re-the-worst"
+	}, {
 		"title" : "Atlanta",
 		"slug" : "atlanta"
-	}, {
-		"title" : "Fairy Tail",
-		"slug" : "fairy-tail"
 	}, {
 		"title" : "The Last Kingdom",
 		"slug" : "the-last-kingdom"
 	}, {
-		"title" : "Survivor",
-		"slug" : "survivor-2000"
+		"title" : "Fairy Tail",
+		"slug" : "fairy-tail"
 	}, {
 		"title" : "SpongeBob SquarePants",
 		"slug" : "spongebob-squarepants"
 	}, {
-		"title" : "Broad City",
-		"slug" : "broad-city"
+		"title" : "Survivor",
+		"slug" : "survivor-2000"
 	}, {
 		"title" : "The Affair",
 		"slug" : "the-affair"
 	}, {
-		"title" : "Nashville",
-		"slug" : "nashville"
+		"title" : "Broad City",
+		"slug" : "broad-city"
 	}, {
 		"title" : "Scream: The TV Series",
 		"slug" : "scream-the-tv-series-2015"
 	}, {
-		"title" : "Robot Chicken",
-		"slug" : "robot-chicken"
-	}, {
 		"title" : "Tokyo Ghoul",
 		"slug" : "tokyo-ghoul"
+	}, {
+		"title" : "Last Man Standing",
+		"slug" : "last-man-standing-2011"
+	}, {
+		"title" : "Robot Chicken",
+		"slug" : "robot-chicken"
 	}, {
 		"title" : "Pokémon",
 		"slug" : "pokemon-1997"
@@ -848,62 +839,68 @@ function setAutoCompleteShowsList() {
 		"title" : "The Goldbergs",
 		"slug" : "the-goldbergs-2013"
 	}, {
-		"title" : "Tosh.0",
-		"slug" : "tosh-0"
-	}, {
-		"title" : "QI",
-		"slug" : "qi"
-	}, {
 		"title" : "Killjoys",
 		"slug" : "killjoys"
 	}, {
 		"title" : "Shooter",
 		"slug" : "shooter"
 	}, {
+		"title" : "Tosh.0",
+		"slug" : "tosh-0"
+	}, {
+		"title" : "QI",
+		"slug" : "qi"
+	}, {
 		"title" : "Travelers",
 		"slug" : "travelers-2016"
-	}, {
-		"title" : "The Voice",
-		"slug" : "the-voice-2011"
-	}, {
-		"title" : "Madam Secretary",
-		"slug" : "madam-secretary"
-	}, {
-		"title" : "Young Justice",
-		"slug" : "young-justice"
-	}, {
-		"title" : "Steven Universe",
-		"slug" : "steven-universe"
-	}, {
-		"title" : "Hell's Kitchen",
-		"slug" : "hell-s-kitchen-2005"
-	}, {
-		"title" : "Dragon Ball Super",
-		"slug" : "dragon-ball-super"
-	}, {
-		"title" : "The Good Doctor",
-		"slug" : "the-good-doctor"
-	}, {
-		"title" : "Whose Line is it Anyway? (US)",
-		"slug" : "whose-line-is-it-anyway-us-1998"
-	}, {
-		"title" : "Fresh Off the Boat",
-		"slug" : "fresh-off-the-boat-2015"
-	}, {
-		"title" : "The Gifted",
-		"slug" : "the-gifted"
-	}, {
-		"title" : "The Venture Bros.",
-		"slug" : "the-venture-bros"
 	}, {
 		"title" : "Lost in Space",
 		"slug" : "lost-in-space-2018"
 	}, {
-		"title" : "Bosch",
-		"slug" : "bosch"
+		"title" : "The Good Doctor",
+		"slug" : "the-good-doctor"
+	}, {
+		"title" : "Steven Universe",
+		"slug" : "steven-universe"
+	}, {
+		"title" : "Young Justice",
+		"slug" : "young-justice"
+	}, {
+		"title" : "Madam Secretary",
+		"slug" : "madam-secretary"
+	}, {
+		"title" : "The Voice",
+		"slug" : "the-voice-2011"
+	}, {
+		"title" : "Dragon Ball Super",
+		"slug" : "dragon-ball-super"
+	}, {
+		"title" : "Hell's Kitchen",
+		"slug" : "hell-s-kitchen-2005"
+	}, {
+		"title" : "Whose Line is it Anyway?",
+		"slug" : "whose-line-is-it-anyway-1998"
 	}, {
 		"title" : "The Sinner",
 		"slug" : "the-sinner"
+	}, {
+		"title" : "The Gifted",
+		"slug" : "the-gifted"
+	}, {
+		"title" : "Fresh Off the Boat",
+		"slug" : "fresh-off-the-boat-2015"
+	}, {
+		"title" : "My Hero Academia",
+		"slug" : "my-hero-academia"
+	}, {
+		"title" : "Bosch",
+		"slug" : "bosch"
+	}, {
+		"title" : "The Venture Bros.",
+		"slug" : "the-venture-bros"
+	}, {
+		"title" : "Bitten",
+		"slug" : "bitten"
 	}, {
 		"title" : "Breaking Bad (2008-2013)",
 		"slug" : "breaking-bad"
@@ -925,9 +922,6 @@ function setAutoCompleteShowsList() {
 	}, {
 		"title" : "Fringe (2008-2013)",
 		"slug" : "fringe"
-	}, {
-		"title" : "Prison Break (2005-2017)",
-		"slug" : "prison-break"
 	}, {
 		"title" : "Firefly (2002-2003)",
 		"slug" : "firefly"
@@ -953,8 +947,8 @@ function setAutoCompleteShowsList() {
 		"title" : "New Girl (2011-2018)",
 		"slug" : "new-girl"
 	}, {
-		"title" : "Battlestar Galactica (2003-2009)",
-		"slug" : "battlestar-galactica-2003"
+		"title" : "Battlestar Galactica (2004-2009)",
+		"slug" : "battlestar-galactica-2004"
 	}, {
 		"title" : "Hannibal (2013-2015)",
 		"slug" : "hannibal"
@@ -965,14 +959,14 @@ function setAutoCompleteShowsList() {
 		"title" : "Band of Brothers (2001-2001)",
 		"slug" : "band-of-brothers"
 	}, {
+		"title" : "The Office (2005-2013)",
+		"slug" : "the-office"
+	}, {
 		"title" : "Parks and Recreation (2009-2015)",
 		"slug" : "parks-and-recreation"
 	}, {
 		"title" : "Chuck (2007-2012)",
 		"slug" : "chuck"
-	}, {
-		"title" : "The Office (2005-2013)",
-		"slug" : "the-office"
 	}, {
 		"title" : "The Wire (2002-2008)",
 		"slug" : "the-wire"
@@ -992,11 +986,11 @@ function setAutoCompleteShowsList() {
 		"title" : "Under the Dome (2013-2015)",
 		"slug" : "under-the-dome"
 	}, {
-		"title" : "The Mentalist (2008-2015)",
-		"slug" : "the-mentalist"
-	}, {
 		"title" : "Scrubs (2001-2010)",
 		"slug" : "scrubs"
+	}, {
+		"title" : "The Mentalist (2008-2015)",
+		"slug" : "the-mentalist"
 	}, {
 		"title" : "The IT Crowd (2006-2010)",
 		"slug" : "the-it-crowd"
@@ -1013,6 +1007,9 @@ function setAutoCompleteShowsList() {
 		"title" : "White Collar (2009-2014)",
 		"slug" : "white-collar"
 	}, {
+		"title" : "The X-Files (1993-2018)",
+		"slug" : "the-x-files"
+	}, {
 		"title" : "Two and a Half Men (2003-2015)",
 		"slug" : "two-and-a-half-men"
 	}, {
@@ -1028,11 +1025,11 @@ function setAutoCompleteShowsList() {
 		"title" : "Bones (2005-2017)",
 		"slug" : "bones"
 	}, {
-		"title" : "Boardwalk Empire (2010-2014)",
-		"slug" : "boardwalk-empire"
-	}, {
 		"title" : "Avatar: The Last Airbender (2005-2008)",
 		"slug" : "avatar-the-last-airbender"
+	}, {
+		"title" : "Boardwalk Empire (2010-2014)",
+		"slug" : "boardwalk-empire"
 	}, {
 		"title" : "2 Broke Girls (2011-2017)",
 		"slug" : "2-broke-girls"
@@ -1040,23 +1037,23 @@ function setAutoCompleteShowsList() {
 		"title" : "Seinfeld (1989-1998)",
 		"slug" : "seinfeld"
 	}, {
-		"title" : "Teen Wolf (2011-2017)",
-		"slug" : "teen-wolf-2011"
-	}, {
 		"title" : "Death Note (2006-2007)",
 		"slug" : "death-note"
 	}, {
+		"title" : "Teen Wolf (2011-2017)",
+		"slug" : "teen-wolf-2011"
+	}, {
 		"title" : "Pretty Little Liars (2010-2017)",
 		"slug" : "pretty-little-liars"
+	}, {
+		"title" : "Sense8 (2015-2018)",
+		"slug" : "sense8"
 	}, {
 		"title" : "Stargate SG-1 (1997-2007)",
 		"slug" : "stargate-sg-1"
 	}, {
 		"title" : "Revolution (2012-2014)",
 		"slug" : "revolution"
-	}, {
-		"title" : "Sense8 (2015-2018)",
-		"slug" : "sense8"
 	}, {
 		"title" : "Revenge (2011-2015)",
 		"slug" : "revenge"
@@ -1073,11 +1070,11 @@ function setAutoCompleteShowsList() {
 		"title" : "Weeds (2005-2012)",
 		"slug" : "weeds"
 	}, {
-		"title" : "The Newsroom (2012-2014)",
-		"slug" : "the-newsroom"
-	}, {
 		"title" : "Misfits (2009-2013)",
 		"slug" : "misfits"
+	}, {
+		"title" : "The Newsroom (2012-2014)",
+		"slug" : "the-newsroom"
 	}, {
 		"title" : "The Following (2013-2015)",
 		"slug" : "the-following"
@@ -1115,6 +1112,9 @@ function setAutoCompleteShowsList() {
 		"title" : "Eureka (2006-2012)",
 		"slug" : "eureka"
 	}, {
+		"title" : "The Originals (2013-2018)",
+		"slug" : "the-originals"
+	}, {
 		"title" : "Entourage (2004-2011)",
 		"slug" : "entourage"
 	}, {
@@ -1127,11 +1127,11 @@ function setAutoCompleteShowsList() {
 		"title" : "The Strain (2014-2017)",
 		"slug" : "the-strain"
 	}, {
-		"title" : "Justified (2010-2015)",
-		"slug" : "justified"
-	}, {
 		"title" : "Gossip Girl (2007-2012)",
 		"slug" : "gossip-girl"
+	}, {
+		"title" : "Justified (2010-2015)",
+		"slug" : "justified"
 	}, {
 		"title" : "The Good Wife (2009-2016)",
 		"slug" : "the-good-wife"
@@ -1151,11 +1151,14 @@ function setAutoCompleteShowsList() {
 		"title" : "Psych (2006-2014)",
 		"slug" : "psych"
 	}, {
+		"title" : "That '70s Show (1998-2006)",
+		"slug" : "that-70s-show"
+	}, {
 		"title" : "Da Vinci's Demons (2013-2015)",
 		"slug" : "da-vinci-s-demons"
 	}, {
-		"title" : "That '70s Show (1998-2006)",
-		"slug" : "that-70s-show"
+		"title" : "Twin Peaks (1990-2017)",
+		"slug" : "twin-peaks"
 	}, {
 		"title" : "Burn Notice (2007-2013)",
 		"slug" : "burn-notice"
@@ -1169,14 +1172,14 @@ function setAutoCompleteShowsList() {
 		"title" : "Scandal (2012-2018)",
 		"slug" : "scandal"
 	}, {
-		"title" : "Veronica Mars (2004-2007)",
-		"slug" : "veronica-mars"
+		"title" : "Marvel's Agent Carter (2015-2016)",
+		"slug" : "marvel-s-agent-carter"
 	}, {
 		"title" : "Gilmore Girls (2000-2007)",
 		"slug" : "gilmore-girls"
 	}, {
-		"title" : "Marvel's Agent Carter (2015-2016)",
-		"slug" : "marvel-s-agent-carter"
+		"title" : "Veronica Mars (2004-2007)",
+		"slug" : "veronica-mars"
 	}, {
 		"title" : "Terra Nova (2011-2011)",
 		"slug" : "terra-nova"
@@ -1187,38 +1190,41 @@ function setAutoCompleteShowsList() {
 		"title" : "Six Feet Under (2001-2005)",
 		"slug" : "six-feet-under"
 	}, {
+		"title" : "Desperate Housewives (2004-2012)",
+		"slug" : "desperate-housewives"
+	}, {
 		"title" : "Stargate Universe (2009-2011)",
 		"slug" : "stargate-universe"
 	}, {
-		"title" : "Desperate Housewives (2004-2012)",
-		"slug" : "desperate-housewives"
+		"title" : "Cosmos: A Spacetime Odyssey (2014-2014)",
+		"slug" : "cosmos-a-spacetime-odyssey"
 	}, {
 		"title" : "Nikita (2010-2013)",
 		"slug" : "nikita"
 	}, {
-		"title" : "Louie (2010-2015)",
-		"slug" : "louie"
-	}, {
 		"title" : "Fullmetal Alchemist: Brotherhood (2009-2010)",
 		"slug" : "fullmetal-alchemist-brotherhood"
+	}, {
+		"title" : "Louie (2010-2015)",
+		"slug" : "louie"
 	}, {
 		"title" : "Star Trek: Voyager (1995-2001)",
 		"slug" : "star-trek-voyager"
 	}, {
-		"title" : "Defiance (2013-2015)",
-		"slug" : "defiance"
-	}, {
 		"title" : "Scorpion (2014-2018)",
 		"slug" : "scorpion"
+	}, {
+		"title" : "Defiance (2013-2015)",
+		"slug" : "defiance"
 	}, {
 		"title" : "The Pacific (2010-2010)",
 		"slug" : "the-pacific"
 	}, {
-		"title" : "Skins (2007-2013)",
-		"slug" : "skins"
-	}, {
 		"title" : "Limitless (2015-2016)",
 		"slug" : "limitless"
+	}, {
+		"title" : "Skins (2007-2013)",
+		"slug" : "skins"
 	}, {
 		"title" : "Constantine (2014-2015)",
 		"slug" : "constantine"
@@ -1235,32 +1241,26 @@ function setAutoCompleteShowsList() {
 		"title" : "Freaks and Geeks (1999-2000)",
 		"slug" : "freaks-and-geeks"
 	}, {
-		"title" : "V (2009-2011)",
-		"slug" : "v-2009"
+		"title" : "Naruto Shippuden (2007-2017)",
+		"slug" : "naruto-shippuden"
 	}, {
 		"title" : "The Shield (2002-2008)",
 		"slug" : "the-shield"
 	}, {
+		"title" : "V (2009-2011)",
+		"slug" : "v-2009"
+	}, {
 		"title" : "My Name Is Earl (2005-2009)",
 		"slug" : "my-name-is-earl"
-	}, {
-		"title" : "Naruto Shippuden (2007-2017)",
-		"slug" : "naruto-shippuden"
-	}, {
-		"title" : "Hell on Wheels (2011-2016)",
-		"slug" : "hell-on-wheels"
 	}, {
 		"title" : "Planet Earth (2006-2006)",
 		"slug" : "planet-earth"
 	}, {
+		"title" : "Hell on Wheels (2011-2016)",
+		"slug" : "hell-on-wheels"
+	}, {
 		"title" : "Malcolm in the Middle (2000-2006)",
 		"slug" : "malcolm-in-the-middle"
-	}, {
-		"title" : "Leverage (2008-2012)",
-		"slug" : "leverage"
-	}, {
-		"title" : "Torchwood (2006-2011)",
-		"slug" : "torchwood"
 	}, {
 		"title" : "Dragon Ball Z (1989-1996)",
 		"slug" : "dragon-ball-z"
@@ -1268,29 +1268,23 @@ function setAutoCompleteShowsList() {
 		"title" : "The Fresh Prince of Bel-Air (1990-1996)",
 		"slug" : "the-fresh-prince-of-bel-air"
 	}, {
+		"title" : "Torchwood (2006-2011)",
+		"slug" : "torchwood"
+	}, {
+		"title" : "Leverage (2008-2012)",
+		"slug" : "leverage"
+	}, {
 		"title" : "Haven (2010-2015)",
 		"slug" : "haven"
 	}, {
 		"title" : "Helix (2014-2015)",
 		"slug" : "helix"
 	}, {
-		"title" : "Alphas (2011-2012)",
-		"slug" : "alphas"
-	}, {
 		"title" : "Cowboy Bebop (1998-1999)",
 		"slug" : "cowboy-bebop"
 	}, {
-		"title" : "Girls (2012-2017)",
-		"slug" : "girls"
-	}, {
-		"title" : "Bachelor in Paradise",
-		"slug" : "bachelor-in-paradise"
-	}, {
-		"title" : "GLOW",
-		"slug" : "glow"
-	}, {
-		"title" : "The Disastrous Life of Saiki K",
-		"slug" : "the-disastrous-life-of-saiki-k"
+		"title" : "Alphas (2011-2012)",
+		"slug" : "alphas"
 	} ];
 	autocomplete(document.getElementById("myInput"), showsToAddList);
 	return showsToAddList;

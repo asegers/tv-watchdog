@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import segers.alex.tvwatchdog.beans.Show;
-import segers.alex.tvwatchdog.controller.ShowController;
 import segers.alex.tvwatchdog.dao.ShowDao;
 
 @Service
@@ -226,23 +225,23 @@ public class TraktService {
 			Object objShow = array.get(i);
 			HashMap hashJson = (HashMap) objShow;
 			String status = (String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD);
-			// if (status.equals("ended") || status.equals("canceled")) {
-			logger.info(hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
-
-			Show show = new Show();
-			show.setTitle((String) hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
-			show.setYearBegin((int) hashJson.get("year"));
-			HashMap hashIds = (HashMap) hashJson.get("ids");
-			show.setIdTrakt((int) hashIds.get("trakt"));
-			show.setIdSlug((String) hashIds.get("slug"));
-			show.setStatusTrakt((String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
-			show.setUpdatedAtTrakt(LocalDateTime.parse((String) hashJson.get("updated_at"), formatter));
-
-			show = populateShow(show);
-
-			showsToAddToMongo.add(show);
-			// }
+			 if (status.equals("ended") || status.equals("canceled")) {
+				logger.info(hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
+	
+				Show show = new Show();
+				show.setTitle((String) hashJson.get(RESPONSE_SHOW_TITLE_FIELD));
+				show.setYearBegin((int) hashJson.get("year"));
+				HashMap hashIds = (HashMap) hashJson.get("ids");
+				show.setIdTrakt((int) hashIds.get("trakt"));
+				show.setIdSlug((String) hashIds.get("slug"));
+				show.setStatusTrakt((String) hashJson.get(RESPONSE_SHOW_TRAKT_STATUS_FIELD));
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern(INCOMING_DATE_FORMAT);
+				show.setUpdatedAtTrakt(LocalDateTime.parse((String) hashJson.get("updated_at"), formatter));
+	
+				show = populateShow(show);
+	
+				showsToAddToMongo.add(show);
+			 }
 		}
 		int count = 1;
 		for (Show show : showsToAddToMongo) {

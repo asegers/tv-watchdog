@@ -13,12 +13,12 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 
 import segers.alex.tvwatchdog.beans.Show;
-import segers.alex.tvwatchdog.dao.ShowDao;
 
 @Component
 public class TvWatchdogUtil {
@@ -33,30 +33,39 @@ public class TvWatchdogUtil {
 
 	public void generateTop200List() {
 
-		try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
-			MongoDatabase database = mongoClient.getDatabase("local");
-			MongoCollection<Document> collection = database.getCollection("testeighty");
+		try (MongoClient mongoClient = new MongoClient(new MongoClientURI("mongodb://asegers:TestPassword123@ds229732.mlab.com:29732/tvwatchdog1"))) {
+			MongoDatabase database = mongoClient.getDatabase("tvwatchdog1");
+			MongoCollection<Document> collection = database.getCollection("shows");
 
 			StringBuilder bldListString = new StringBuilder();
 			bldListString.append("[");
 
 			MongoCursor<Document> cursor = collection.find().iterator();
 
-			String title = "";
-			String slug = "";
+
 			try {
 				while (cursor.hasNext()) {
+					String title = "";
+					String slug = "";
 					String strShow = cursor.next().toJson();
 					JSONObject jsonShow = new JSONObject(strShow);
 					title = jsonShow.getString("title");
 					if (jsonShow.getString("status").equals(SERIES_ENDED)) {
 						StringBuilder bld = new StringBuilder();
-						bld.append(new String[] { title, " (", Integer.toString(jsonShow.getInt("yearBegin")), "-",
-								Integer.toString(jsonShow.getInt("yearLatest")), ")" });
+						bld.append(title)
+						.append(" (")
+						.append(Integer.toString(jsonShow.getInt("yearBegin")))
+						.append("-")
+						.append(Integer.toString(jsonShow.getInt("yearLatest")))
+						.append(")");
 						title = bld.toString();
 					}
 					slug = jsonShow.getString("slug");
-					bldListString.append(new String[] { "{\"title\": \"", title, "\", \"slug\": \"", slug, "\"}, " });
+					bldListString.append("{\"title\": \"")
+					.append(title)
+					.append("\", \"slug\": \"")
+					.append(slug)
+					.append("\"}, ");
 				}
 			} finally {
 				cursor.close();
@@ -64,7 +73,8 @@ public class TvWatchdogUtil {
 
 			String listString = bldListString.toString();
 			listString = listString.substring(0, listString.length()) + "]";
-			logger.info(listString);
+			logger.info(bldListString.toString());
+			System.out.println(listString);
 		}
 	}
 

@@ -12,6 +12,7 @@ import org.json.JSONObject;
 import org.springframework.stereotype.Repository;
 
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -19,15 +20,18 @@ import com.mongodb.client.model.Filters;
 import com.mongodb.client.result.UpdateResult;
 
 import segers.alex.tvwatchdog.beans.Show;
-import segers.alex.tvwatchdog.service.TraktService;
 
 @Repository
 public class ShowDao implements Dao<Show> {
 
-	private static final String HOST_NAME = "localhost";
-	private static final int PORT_NUMBER = 27017;
-	private static final String DATABASE_NAME = "local";
-	private static final String COLLECTION_NAME = "testeighty";
+//	private static final String HOST_NAME = "localhost";
+//	private static final int PORT_NUMBER = 27017;
+//	private static final String DATABASE_NAME = "local";
+//	private static final String COLLECTION_NAME = "testeighty";
+	private static final String URI = "mongodb://asegers:TestPassword123@ds229732.mlab.com:29732/tvwatchdog1";
+	private static final String DATABASE_NAME = "tvwatchdog1";
+	private static final String COLLECTION_NAME = "shows";
+
 
 	final static Logger logger = LogManager.getLogger(ShowDao.class);
 
@@ -40,7 +44,9 @@ public class ShowDao implements Dao<Show> {
 	public ArrayList<Show> getShowsBySlugNames(ArrayList<String> slugs) {
 		ArrayList<Show> shows = new ArrayList<>();
 
-		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+		try (MongoClient mongoClient = new MongoClient(new MongoClientURI(URI))) {
+
+//		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
 			MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 			MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
@@ -62,7 +68,9 @@ public class ShowDao implements Dao<Show> {
 	public ArrayList<Show> getAll() {
 		ArrayList<Show> allShows = new ArrayList<>();
 
-		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+		try (MongoClient mongoClient = new MongoClient(new MongoClientURI(URI))) {
+
+//			try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
 			MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 			MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
@@ -87,7 +95,9 @@ public class ShowDao implements Dao<Show> {
 
 	public void saveShows(ArrayList<Show> shows) {
 
-		try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+		try (MongoClient mongoClient = new MongoClient(new MongoClientURI(URI))) {
+
+//			try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
 			MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 			MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 
@@ -108,7 +118,9 @@ public class ShowDao implements Dao<Show> {
 	public void updateShows(ArrayList<Show> shows) {
 
 		if (null != shows) {
-			try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
+			try (MongoClient mongoClient = new MongoClient(new MongoClientURI(URI))) {
+
+//				try (MongoClient mongoClient = new MongoClient(HOST_NAME, PORT_NUMBER)) {
 				MongoDatabase database = mongoClient.getDatabase(DATABASE_NAME);
 				MongoCollection<Document> collection = database.getCollection(COLLECTION_NAME);
 	
