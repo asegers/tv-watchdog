@@ -3,7 +3,7 @@ document.getElementById("id01").innerHTML = "<img src=\"ajax-loader.gif\" alt=\"
 var showsToAddList = setAutoCompleteShowsList();
 
 //var url = "http://localhost:8080/getShows?shows=";
-var url = "https://stark-reef-44618.herokupapp.com/getShows?shows=";
+var url = "http://stark-reef-44618.herokupapp.com/getShows?shows=";
 
 var currentSort = getUserSortMethodFromLocalStorage();
 
