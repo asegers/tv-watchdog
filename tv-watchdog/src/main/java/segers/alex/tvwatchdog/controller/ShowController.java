@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +33,7 @@ public class ShowController {
 
 	final static Logger logger = LogManager.getLogger(ShowController.class);
 
+	@CrossOrigin
 	@RequestMapping("/getShows")
 	public String getShows(@RequestParam(value = "sort", defaultValue = "best") String sort,
 			@RequestParam(value = "shows", defaultValue = "game-of-thrones,breaking-bad") ArrayList<String> slugs) {
