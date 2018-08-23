@@ -1,0 +1,51 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>TV Watchdog</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="index.css">
+<!--<link rel="stylesheet" href="tingle.min.css"> -->
+<!--<script src="tingle.min.js"></script> -->
+</head>
+
+<body>
+	<!--Make sure the form has the autocomplete function switched off:-->
+	<form autocomplete="off" action="javascript:addShowAndRefresh()">
+		<div class="autocomplete" style="width: 300px;">
+			<input id="myInput" type="text" name="showToAdd"
+				placeholder="Add a show...">
+		</div>
+		<input type="submit">
+	</form>
+
+	<!-- Rectangular switch -->
+	Best
+	<label class="switch"> <input id="sortSwitch" type="checkbox"
+		onclick="updateSort()"> <span class="slider"></span>
+	</label> A-Z
+
+	<br>
+	<br>
+	<br>
+	<br>
+
+	<div id="id01"></div>
+
+	<br>
+	<br>
+	<br>
+	<br>
+	<button onclick="clearMyShows()">Clear/Reset Shows</button>
+	<p>Your show list is saved in the browser's cache.</p>
+
+	<div class="footer">
+		© 2018 Alexander Segers. Powered by <img src="trakt-icon-black.png"
+			width="18" height="18">
+	</div>
+
+	<script src="index.js"></script>
+
+</body>
+</html>
