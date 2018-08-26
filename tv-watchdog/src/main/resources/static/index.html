@@ -1,24 +1,35 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-<title>TV Watchdog</title>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" href="index.css">
-<!--<link rel="stylesheet" href="tingle.min.css"> -->
-<!--<script src="tingle.min.js"></script> -->
+	<title>TV Watchdog</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<link rel="stylesheet"
+		href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="index.css">
+	<link rel="stylesheet" href="auto-complete.css">
 </head>
 
 <body>
 	<!--Make sure the form has the autocomplete function switched off:-->
-	<form autocomplete="off" action="javascript:addShowAndRefresh()">
+	<!-- <form autocomplete="off" action="javascript:addShowAndRefresh()">
 		<div class="autocomplete" style="width: 300px;">
 			<input id="myInput" type="text" name="showToAdd"
 				placeholder="Add a show...">
 		</div>
 		<input type="submit">
-	</form>
+	</form> -->
+	
+	<form onsubmit="javascript:addShowAndRefresh()" class="pure-form" style="border-top: 1px solid #eee;border-bottom:1px solid #eee;background:#fafafa;margin:30px 0;padding:20px 10px;text-align:left">
+        <input id="myInput" autofocus="" type="text" name="q" placeholder="Add a show..." style="width:100%;max-width:600px;outline:0" autocomplete="off">
+    </form>
+	
+<!-- 	<form autocomplete="off" action="javascript:addShowAndRefresh()">
+		<div class="autocomplete" style="width: 300px;">
+			<input id="myInput" type="text" name="showToAdd"
+				placeholder="Add a show...">
+		</div>
+		<input type="submit">
+	</form> -->
 
 	<!-- Rectangular switch -->
 	<div class="wholeSwitch">
@@ -39,7 +50,7 @@
 	<div id="seriesEnded"></div>
 	
 	<br>
-	<button onclick="clearMyShows()">Reset to Default Shows</button>
+	<button onclick="clearMyShows()" style="cursor: pointer">Reset to Default Shows</button>
 	<p style="font-size: 14px">Your show list is saved in the browser's cache.</p>
 
 	<div class="footer">
@@ -47,6 +58,7 @@
 			width="18" height="18">
 	</div>
 
+	<script src="auto-complete.min.js"></script>
 	<script src="index.js"></script>
 
 </body>
