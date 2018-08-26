@@ -70,9 +70,9 @@ function myFunction(arr) {
 		buildDisplaySortedAlpha(shows);
 	} else {
 		buildDisplaySortedBest(shows);
-		document.getElementById("id01").innerHTML = "";
 	}
 	
+	document.getElementById("id01").innerHTML = "";
 	setUpRemoveButtonListeners(shows);
 }
 
@@ -84,7 +84,7 @@ function buildDisplaySortedAlpha(shows) {
     	if(shows[i].title.startsWith("The ")) shows[i].title = shows[i].title.substr(4, shows[i].title.length - 1) + ", The";
 	}
 	
-	generateTable("A - Z", shows, "id01");
+	generateTable("A - Z", shows, "seasonAiring");
 }
 
 function generateTable(header, shows, divId) {
@@ -119,7 +119,7 @@ function generateTable(header, shows, divId) {
 
 function removeShow(title, slug) {
 	return function() {
-		if (window.confirm("Delete " + title + " from your list?")) {
+		if (window.confirm("Remove " + title + " from your list?")) {
 			var storedShows = getUserShowsFromLocalStorage();
 			storedShows.splice(storedShows.indexOf(slug),1);
 			localStorage['myShowsJson'] = JSON.stringify(storedShows);
