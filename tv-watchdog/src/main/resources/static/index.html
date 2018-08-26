@@ -21,24 +21,26 @@
 	</form>
 
 	<!-- Rectangular switch -->
-	Best
-	<label class="switch"> <input id="sortSwitch" type="checkbox"
-		onclick="updateSort()"> <span class="slider"></span>
-	</label> A-Z
-
+	<div class="wholeSwitch">
+		Best
+		<label class="switch"> <input id="sortSwitch" type="checkbox"
+			onclick="updateSort()"> <span class="slider"></span>
+		</label>
+		A-Z
+	</div>
 	<br>
-	<br>
-	<br>
-	<br>
-
 	<div id="id01"></div>
-
+	
+	<div id="seasonAiring"></div>
+	<div id="seasonHasPremiereDate"></div>
+	<div id="seasonEnded"></div>
+	<div id="newSeasonAnnounced"></div>
+	<div id="awaitingUpdates"></div>
+	<div id="seriesEnded"></div>
+	
 	<br>
-	<br>
-	<br>
-	<br>
-	<button onclick="clearMyShows()">Clear/Reset Shows</button>
-	<p>Your show list is saved in the browser's cache.</p>
+	<button onclick="clearMyShows()">Reset to Default Shows</button>
+	<p style="font-size: 14px">Your show list is saved in the browser's cache.</p>
 
 	<div class="footer">
 		© 2018 Alexander Segers. Powered by <img src="trakt-icon-black.png"

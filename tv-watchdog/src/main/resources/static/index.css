@@ -1,3 +1,32 @@
+table.shows-section-table {
+	margin-bottom:25px;
+	margin-left:10px;
+	
+	text-align:left;	
+}
+
+th {
+	font-weight: normal;
+	font-size: 14px;
+	color: gray;
+}
+
+.remove-button {
+	width: 20px;
+	color: lightgray;
+    font-weight: lighter;
+    font-size: 12px;
+    text-align: center;
+}
+
+.remove-button:hover {
+	width: 20px;
+	color: red;
+    font-weight: lighter;
+    font-size: 16px;
+    cursor: pointer;
+}
+
 button.link {
 	background: none;
 	border: none;
@@ -110,13 +139,20 @@ input[type=submit] {
 	text-align: left;
 }
 
+.wholeSwitch {
+	margin-left: 280px;
+	margin-top: 20px;
+	font-size: 13px;
+}
+
 /* The switch - the box around the slider */
 .switch {
 	position: relative;
 	display: inline-block;
 	width: 60px;
-	height: 34px;
+	height: 20px;
 	top: 10px;
+	margin-bottom: 5px;
 }
 
 /* Hide default HTML checkbox */
@@ -140,7 +176,7 @@ input[type=submit] {
 .slider:before {
 	position: absolute;
 	content: "";
-	height: 26px;
+	height: 13px;
 	width: 26px;
 	left: 4px;
 	bottom: 4px;

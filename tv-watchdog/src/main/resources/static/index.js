@@ -2,7 +2,8 @@ document.getElementById("id01").innerHTML = "<img src=\"ajax-loader.gif\" alt=\"
 
 var showsToAddList = setAutoCompleteShowsList();
 
-//var url = "http://localhost:8080/getShows?shows=";
+var shows;
+
 var url = "http://tv.alexandersegers.com/getShows?shows=";
 
 
@@ -40,7 +41,7 @@ function getUserShowsFromLocalStorage() {
 	if (stored) {
 		myShows = JSON.parse(stored);
 	} else {
-		myShows = [ "breaking-bad", "westworld" ]; // default list
+		myShows = [ "breaking-bad", "westworld", "ncis", "the-handmaid-s-tale", "sherlock", "better-call-saul" ]; // default list
 		localStorage['myShowsJson'] = JSON.stringify(myShows);
 	}
 	return myShows;
@@ -60,36 +61,77 @@ function getUserSortMethodFromLocalStorage() {
 function myFunction(arr) {
 	shows = arr.shows;
 
-	var out = "";
 	if (currentSort.localeCompare("alphabetical") == 0) {
 		console.log(shows);
-		out = buildDisplaySortedAlpha(shows);
+		buildDisplaySortedAlpha(shows);
 	} else {
-		out = buildDisplaySortedBest(shows);
+		buildDisplaySortedBest(shows);
+		document.getElementById("id01").innerHTML = "";
 	}
-    
-	document.getElementById("id01").innerHTML = out;
+	
+	setUpRemoveButtonListeners(shows);
 }
 
 function buildDisplaySortedAlpha(shows) {
-	console.log(shows);
 	shows = sortShowsByTitle(shows);
-	console.log(shows);
 
-	var out = addShowstoOutput(shows);
-	return out;
+	for (var i=0; i <shows.length; i++) {
+		if(shows[i].title.startsWith("A ")) shows[i].title = shows[i].title.substr(2, shows[i].title.length - 1) + ", A";
+    	if(shows[i].title.startsWith("The ")) shows[i].title = shows[i].title.substr(4, shows[i].title.length - 1) + ", The";
+	}
+	
+	generateTable("A - Z", shows, "id01");
+}
+
+function generateTable(header, shows, divId) {
+	var table = "";
+	if (null != shows[0]) {
+		table = "<table class=\"shows-section-table\">" +
+				"<tr><th></th>" +
+				"<th>" + header + "</th>" +
+				"</tr>";
+		for (var i = 0; i < shows.length; i++) {
+			table += "<tr>" +
+						"<td id=\"remove-"+shows[i].slug + "\" class=\"remove-button\"> " +
+								"<i  class=\"fa fa-times\" ></i>" +
+						"</td>" +
+						"<td><b>" + shows[i].title + "</b>" + shows[i].detail;
+			
+			// add calendar icon/date tooltip if it's a countdown detail.
+			if ((shows[i].status).localeCompare("seasonCurrentlyAiring") == 0
+					|| (shows[i].status).localeCompare("newSeasonHasPremiereDate") == 0) {
+				table += " <div class=\"tooltip\"> <i class=\"fa fa-calendar\"></i> <span class=\"tooltiptext tooltip-right\">"
+						+ shows[i].hoverDate + "</span></div>";
+			}
+			table += "</td></tr>";
+			if (!(i==shows.length-1)) {
+				if(!shows[i].title.startsWith(shows[i+1].title.substr(0,1))) table += "<tr><td></td></tr><tr><td></td></tr>"
+			}
+		}
+		table += "</table>";
+	}
+	document.getElementById(divId).innerHTML = table;
+}
+
+function removeShow(title, slug) {
+	return function() {
+		if (window.confirm("Delete " + title + " from your list?")) {
+			var storedShows = getUserShowsFromLocalStorage();
+			storedShows.splice(storedShows.indexOf(slug),1);
+			localStorage['myShowsJson'] = JSON.stringify(storedShows);
+			refreshPage();
+		}
+	}
 }
 
 function buildDisplaySortedBest(shows) {
-	//neat sort: (currentlyAiring) "New Ep airs in...", (newSeasonHasDate) "New season premieres in...", [Ready for binging in...], 
-	// (seasonEnded, < 1.5yr since lastEp) "Ready to binge:", (seasonAnnounced) "News:", (seasonEnded, >1.5yr) "Awaiting updates", (seriesEnded) "Ended series:"
-	//temp workaround (re-assign each show's detail.. may want to move this to Java, or possibly move original detail assignment to js also)
 	var newEpAirings = new Array();
 	var newSeasonDates = new Array();
 	var recentBingables = new Array();
 	var news = new Array();
 	var awaitingUpdates = new Array();
 	var ended = new Array();
+	
 	for (var i = 0; i < shows.length; i++) {
 		var status = shows[i].status;
 		var show = shows[i];
@@ -140,49 +182,28 @@ function buildDisplaySortedBest(shows) {
 		}
 	}
 	
-	var out = "";
+	newEpAirings = sortShowsByDateAsc(newEpAirings);
+	newSeasonDates = sortShowsByDateAsc(newSeasonDates);
+	recentBingables = sortShowsByDateDesc(recentBingables);
+	news = sortShowsByTitle(news);
+	awaitingUpdates = sortShowsByTitle(awaitingUpdates);
+	ended = sortShowsByTitle(ended);
 	
-	if (null != newEpAirings[0]) {
-		newEpAirings = sortShowsByDateAsc(newEpAirings);
-		out += "New Episode airs in...<br>";
-		out += addShowstoOutput(newEpAirings);
-		out += "<br>";
-	}
+	generateTable("New Episode in...", newEpAirings, "seasonAiring");
+	generateTable("Season Premiere in...", newSeasonDates, "seasonHasPremiereDate");
+	generateTable("Ready to Binge:", recentBingables, "seasonEnded");
+	generateTable("News:", news, "newSeasonAnnounced");
+	generateTable("Awaiting Updates:", awaitingUpdates, "awaitingUpdates");
+	generateTable("Completed Series:", ended, "seriesEnded");
 
-	if (null != newSeasonDates[0]) {
-		newSeasonDates = sortShowsByDateAsc(newSeasonDates);
-		out += "New Season premieres in...<br>";
-		out += addShowstoOutput(newSeasonDates);
-		out += "<br>";
-	}
+}
 
-	if (null != recentBingables[0]) {
-		recentBingables = sortShowsByDateDesc(recentBingables);
-		out += "Ready to Binge:<br>";
-		out += addShowstoOutput(recentBingables);
-		out += "<br>";
+function setUpRemoveButtonListeners(shows) {
+	for (var i=0; i < shows.length; i++) {
+		var title = shows[i].title;
+		var slug = shows[i].slug;
+		document.getElementById("remove-" + slug).addEventListener("click", removeShow(title, slug));
 	}
-
-	if (null != news[0]) {
-		news = sortShowsByTitle(news);
-		out += "News:<br>";
-		out += addShowstoOutput(news);
-		out += "<br>";
-	}
-
-	if (null != awaitingUpdates[0]) {
-		awaitingUpdates = sortShowsByTitle(awaitingUpdates);
-		out += "Awaiting Updates...<br>";
-		out += addShowstoOutput(awaitingUpdates);
-		out += "<br>";
-	}
-
-	if (null != ended[0]) {
-		ended = sortShowsByTitle(ended);
-		out += "Completed Series:<br>";
-		out += addShowstoOutput(ended);
-	}
-	return out;
 }
 
 function sortShowsByTitle(shows){
@@ -196,7 +217,7 @@ function sortShowsByTitle(shows){
     	if(bTitle.startsWith("A ")) bTitle = bTitle.substr(2, bTitle.length - 1);
     	if(bTitle.startsWith("THE ")) bTitle = bTitle.substr(4, bTitle.length - 1);
     	
-	  	return aTitle > bTitle;
+	  	return aTitle.localeCompare(bTitle);
 	});
 	return shows;
 }
@@ -217,50 +238,6 @@ function sortShowsByDateDesc(shows) {
 		return aDate < bDate;
 	});
 	return shows;
-}
-
-function addShowstoOutput(shows) {
-	var tempOut = "";
-
-	for (var i = 0; i < shows.length; i++) {
-		var singleShowOutput = addSingleShowToTempOutputString(shows[i]);
-		tempOut += singleShowOutput;
-
-		// next line
-		tempOut += "<br>";
-
-		// check for extra break for alphabetical sort
-		   if (currentSort.localeCompare("alphabetical") == 0 && null != shows[i+1]) {
-		   	var currentTitle = shows[i].title.toUpperCase();
-		   	var nextTitle = shows[i+1].title.toUpperCase();
-		   	if(currentTitle.startsWith("A ")) currentTitle = currentTitle.substr(2, currentTitle.length - 1);
-		   	if(currentTitle.startsWith("THE ")) currentTitle = currentTitle.substr(4, currentTitle.length - 1);
-		   	if(nextTitle.startsWith("A ")) nextTitle = nextTitle.substr(2, nextTitle.length - 1);
-		   	if(nextTitle.startsWith("THE ")) nextTitle = nextTitle.substr(4, nextTitle.length - 1);
-		   	if (nextTitle.substr(0,1) > currentTitle.substr(0,1)) {
-		   		tempOut += "<br>";
-		   	}
-		   } 
-	}
-	return tempOut;
-}
-
-function addSingleShowToTempOutputString(show) {
-	var out = "";
-
-	// TITLE
-	showTitle = "<b>" + show.title + "</b>" + show.detail;
-
-	// add calendar icon/date tooltip if it's a countdown detail.
-	if ((show.status).localeCompare("seasonCurrentlyAiring") == 0
-			|| (show.status).localeCompare("newSeasonHasPremiereDate") == 0) {
-		out += showTitle
-				+ " <div class=\"tooltip\"> <i class=\"fa fa-calendar\"></i> <span class=\"tooltiptext tooltip-right\">"
-				+ show.hoverDate + "</span></div>";
-	} else {
-		out += showTitle;
-	}
-	return out;
 }
 
 function updateSort() {
