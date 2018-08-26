@@ -276,9 +276,20 @@ function addShowAndRefresh(element) {
 		myShows = new Array();
 	}
 
-	myShows.push(slug);
-	localStorage['myShowsJson'] = JSON.stringify(myShows);
-
+	// Check for duplicates
+	var noDuplicate = true;
+	for (var i=0; i<myShows.length; i++) {
+		console.log(slug + ", " + myShows[i]);
+		if (slug.localeCompare(myShows[i]) == 0) {
+			noDuplicate = false;
+			break;
+		}
+	}
+	
+	if (noDuplicate) {
+		myShows.push(slug);
+		localStorage['myShowsJson'] = JSON.stringify(myShows);
+	}
 	refreshPage();
 }
 
